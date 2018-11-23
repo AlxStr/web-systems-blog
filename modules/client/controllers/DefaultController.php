@@ -4,6 +4,7 @@ namespace app\modules\client\controllers;
 
 use app\models\Category;
 use app\models\Post;
+use app\models\PostSearch;
 use Yii;
 use yii\data\Pagination;
 use yii\web\Controller;
@@ -20,13 +21,13 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        $query = Post::find()->where(['status' => 1])->orderBy(['updated_at' => SORT_DESC]);
-        $countQuery = clone $query;
-        $pages = new Pagination(['totalCount' => $countQuery->count()]);
-        $pages->setPageSize(7);
-        $models = $query->offset($pages->offset)
-            ->limit($pages->limit)
-            ->all();
+        $searchModel = new PostSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andFilterWhere(['status'=> 1]);
+        $dataProvider->query->orderBy(['updated_at' => SORT_DESC]);
+        $dataProvider->pagination->pageSize = '5';
+        $pages = $dataProvider->getPagination();
+        $models = $dataProvider->getModels();
 
         return $this->render('index', [
             'posts' => $models,

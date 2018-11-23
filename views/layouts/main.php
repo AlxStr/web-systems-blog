@@ -50,8 +50,6 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Posts', 'url' => ['/client/post/']];
         $menuItems[] = ['label' => 'Profile', 'url' => ['/client/profile/']];
 
-        if (Yii::$app->user->can('admin'))
-            $menuItems[] = ['label' => 'AdminPanel', 'url' => ['/admin/default/']];
 
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')

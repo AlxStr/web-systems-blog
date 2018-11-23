@@ -16,7 +16,6 @@ class RbacController extends Controller
         // create roles
         $admin = $authManager->createRole('admin');
         $author = $authManager->createRole('author');
-        $guest = $authManager->createRole('guest');
 
         //create permissions
         $postIndex = $authManager->createPermission('post index');
@@ -47,13 +46,6 @@ class RbacController extends Controller
         // add roles to auth manager
         $authManager->add($admin);
         $authManager->add($author);
-        $authManager->add($guest);
-
-        //add permissions-per-role in auth manager
-        // Guest
-        $authManager->addChild($guest, $postIndex);
-        $authManager->addChild($guest, $postView);
-
 
         $rule = new AuthorRule;
         $authManager->add($rule);
@@ -65,7 +57,6 @@ class RbacController extends Controller
         $authManager->addChild($author, $updateOwnPost);
 
         // Author
-        $authManager->addChild($author, $guest);
         $authManager->addChild($author, $postCreate);
         $authManager->addChild($author, $postUpdate);
         $authManager->addChild($author, $postDelete);

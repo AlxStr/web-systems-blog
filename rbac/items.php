@@ -45,17 +45,9 @@ return [
         'type' => 1,
         'children' => [
             'updateOwnPost',
-            'guest',
             'post create',
             'post update',
             'post delete',
-        ],
-    ],
-    'guest' => [
-        'type' => 1,
-        'children' => [
-            'post index',
-            'post view',
         ],
     ],
     'updateOwnPost' => [

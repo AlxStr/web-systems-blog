@@ -32,13 +32,6 @@ class PostController extends Controller
             ],
         ];
     }
-    public function beforeAction($action)
-    {
-        if (Yii::$app->user->can('author'))
-            return true;
-        $this->redirect('/login');
-        return false;
-    }
 
     /**
      * Lists all Post models.

@@ -8,13 +8,6 @@ use yii\web\NotFoundHttpException;
 
 class ProfileController extends \yii\web\Controller
 {
-    public function beforeAction($action)
-    {
-        if (Yii::$app->user->can('author'))
-            return true;
-        $this->redirect('/login');
-        return false;
-    }
 
     public function actionIndex()
     {

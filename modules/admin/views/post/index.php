@@ -11,7 +11,6 @@ $this->title = 'Posts';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<h2>Admin Section</h2>
 <div class="post-index">
 
     <h1><?= Html::encode($this->title) ?></h1>

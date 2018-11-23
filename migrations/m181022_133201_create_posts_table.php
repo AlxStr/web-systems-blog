@@ -12,7 +12,7 @@ class m181022_133201_create_posts_table extends Migration
      */
     public function safeUp()
     {
-        $this->createTable('posts', [
+        $this->createTable('{{%posts}}', [
             'id' => $this->primaryKey(),
             'category_id' => $this->integer(),
             'author' => $this->integer(),
@@ -27,51 +27,33 @@ class m181022_133201_create_posts_table extends Migration
 
         $this->createIndex(
             'idx-posts-categories_id',
-            'posts',
+            '{{%posts}}',
             'category_id'
         );
 
         $this->addForeignKey(
             'fk-posts-categories_id',
-            'posts',
+            '{{%posts}}',
             'category_id',
-            'categories',
+            '{{%categories}}',
             'id',
             'CASCADE'
         );
 
         $this->createIndex(
             'idx-posts-author',
-            'posts',
+            '{{%posts}}',
             'author'
         );
 
         $this->addForeignKey(
             'fk-posts-author',
-            'posts',
+            '{{%posts}}',
             'author',
-            'user',
+            '{{%user}}',
             'id',
             'CASCADE'
         );
-
-
-        //create posts
-        for($i=1; $i<=200; $i++){
-            $user = new \app\models\Post();
-
-            $this->insert('posts', [
-                'category_id' => rand(1, 5),
-                'author' => rand(2, 5),
-                'logo' => '',
-                'title' => "Post - $i",
-                'description' => "description to post - $i",
-                'body' => "Body text here, post - $i",
-                'status' => 0,
-                'created_at' => time(),
-                'updated_at' => time(),
-            ]);
-        }
     }
 
     /**
@@ -81,24 +63,24 @@ class m181022_133201_create_posts_table extends Migration
     {
         $this->dropForeignKey(
             'fk-posts-category_id',
-            'posts'
+            '{{%posts}}'
         );
 
         $this->dropIndex(
             'idx-posts-category_id',
-            'posts'
+            '{{%posts}}'
         );
 
         $this->dropForeignKey(
             'fk-posts-author',
-            'posts'
+            '{{%posts}}'
         );
 
         $this->dropIndex(
             'idx-posts-author',
-            'posts'
+            '{{%posts}}'
         );
 
-        $this->dropTable('posts');
+        $this->dropTable('{{%posts}}');
     }
 }

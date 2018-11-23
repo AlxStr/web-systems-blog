@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Category;
 use app\models\Post;
+use app\models\PostSearch;
 use app\models\SignupForm;
 use app\models\User;
 use Yii;
@@ -11,6 +12,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
+use yii\web\NotFoundHttpException;
 
 class SiteController extends Controller
 {
@@ -38,6 +40,41 @@ class SiteController extends Controller
                 ],
             ],
         ];
+    }
+
+
+    public function actionIndex()
+    {
+        $searchModel = new PostSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andFilterWhere(['status'=> 1]);
+        $dataProvider->query->orderBy(['updated_at' => SORT_DESC]);
+        $dataProvider->pagination->pageSize = '5';
+        $pages = $dataProvider->getPagination();
+        $models = $dataProvider->getModels();
+
+        return $this->render('index', [
+            'posts' => $models,
+            'pages' => $pages,
+        ]);
+    }
+
+    public function actionViewPost($id){
+        $post = $this->findPost($id);
+        $title_cat = Category::getTitle($post->category_id);
+        return $this->render('view', [
+            'post' => $post,
+            'category' => $title_cat,
+        ]);
+    }
+
+    protected function findPost($id)
+    {
+        if (($model = Post::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
     /**

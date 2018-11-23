@@ -5,11 +5,11 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
-    'name' => 'The Blog',
+    'name' => getenv('APP_NAME'),
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
-    'language'=>'ru',
-    'defaultRoute' => '/client/default/index',
+    'language'=> getenv('APP_LANG'),
+//    'defaultRoute' => '/client/default/index',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -19,6 +19,7 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'PgHstGPH6xENmHQJ494Vic7gdk1yJooF',
+			'baseUrl' => '',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -33,7 +34,6 @@ $config = [
         'authManager' => [
             'class' => 'elisdn\hybrid\AuthManager',
             'modelClass' => 'app\models\User',
-            'defaultRoles' => ['guest'],
         ],
 
         'mailer' => [
@@ -59,6 +59,9 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 '<action>' => 'site/<action>',
+                //роут постів для гостя
+                'view-post/<id:\d+>' => 'site/view-post',
+
                 'post/<id:\d+>' => 'client/default/post',
                 'post/<action>' => 'client/post',
                 'post/<action>/<id:\d+>' => 'client/post/<action>',
@@ -90,12 +93,6 @@ $config = [
                         'allow' => true,
                         'roles' => ['author'],
                     ],
-                    [
-                        'allow' => true,
-                        'actions' => ['index', 'post'],
-                        'roles' => ['guest'],
-                    ]
-
                 ],
             ],
         ],
@@ -108,12 +105,12 @@ $config = [
 
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
-//    $config['bootstrap'][] = 'debug';
-//    $config['modules']['debug'] = [
-//        'class' => 'yii\debug\Module',
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = [
+        'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
-//    ];
+    ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
