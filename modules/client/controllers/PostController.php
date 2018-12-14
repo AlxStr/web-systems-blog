@@ -8,6 +8,7 @@ use Yii;
 use app\models\Post;
 use app\models\PostSearch;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -40,7 +41,7 @@ class PostController extends Controller
     public function actionIndex()
     {
         if (Yii::$app->user->can('admin'))
-            $this->redirect('/admin/post/index');
+            $this->redirect(Url::toRoute('/admin/post/'));
 
         $searchModel = new PostSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

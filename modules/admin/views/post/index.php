@@ -16,7 +16,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
     <p>
         <?= Html::a('Создать пост', ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Модерировать посты', ['moderate'], ['class' => 'btn btn-info']) ?>
     </p>
 
     <?= GridView::widget([
@@ -24,9 +23,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update}',
+            ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update} {active}',
                 'buttons' => [
                     'active' => function ($url, $model, $key) {
+                        if ($model->status == 1) return false;
                         return Html::a('<span class="glyphicon glyphicon-ok" title="Активно"></span>', $url);
                     },
                 ],

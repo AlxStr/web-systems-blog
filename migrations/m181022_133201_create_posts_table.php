@@ -82,5 +82,7 @@ class m181022_133201_create_posts_table extends Migration
         );
 
         $this->dropTable('{{%posts}}');
+
+        return true;
     }
 }

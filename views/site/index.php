@@ -2,6 +2,7 @@
 
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\LinkPager;
 
 ?>
@@ -14,7 +15,7 @@ use yii\widgets\LinkPager;
         <?php foreach ($posts as $post): ?>
             <div class="well">
                 <div class="media">
-                    <a class="pull-left" href="<?= '/view-post/' . $post->id ?>">
+                    <a class="pull-left" href="<?= Url::toRoute(['/article/' . $post->id])?>">
 
                         <?php if (is_null($post->logo) || empty($post->logo)): ?>
                             <?= Html::img('@web/images/no-image.png', ['class' => 'media-object']) ?>
@@ -24,7 +25,7 @@ use yii\widgets\LinkPager;
 
                     </a>
                     <div class="media-body">
-                        <h4 class="media-heading"><?= Html::a($post->title, ['/view-post/' . $post->id]) ?></h4>
+                        <h4 class="media-heading"><?= Html::a($post->title, ['/article/' . $post->id]) ?></h4>
                         <p class="text-right">Author: <?= $post->postAuthor->username ?></p>
                         <p>
                             <?= $post->description ?>

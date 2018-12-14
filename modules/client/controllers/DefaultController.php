@@ -22,9 +22,8 @@ class DefaultController extends Controller
     public function actionIndex()
     {
         $searchModel = new PostSearch();
+        Yii::$app->request->setQueryParams(['only' => 'active']);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->andFilterWhere(['status'=> 1]);
-        $dataProvider->query->orderBy(['updated_at' => SORT_DESC]);
         $dataProvider->pagination->pageSize = '5';
         $pages = $dataProvider->getPagination();
         $models = $dataProvider->getModels();

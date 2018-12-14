@@ -162,21 +162,6 @@ class PostController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionModerate()
-    {
-        $searchModel = new PostSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        $categories = Category::find()->all();
-        $categories = ArrayHelper::map($categories, 'id', 'title');
-
-        $dataProvider->query->andFilterWhere(['status' => 'mod']);
-        return $this->render('moderate', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'categories' => $categories
-        ]);
-    }
 
     // Method makes post status active
     public function actionActive($id)
@@ -185,6 +170,6 @@ class PostController extends Controller
         $model->status = 1;
         $model->save();
 
-        return $this->redirect(['moderate']);
+        return $this->redirect(['index']);
     }
 }

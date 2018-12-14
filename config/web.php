@@ -9,7 +9,6 @@ $config = [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'language'=> getenv('APP_LANG'),
-//    'defaultRoute' => '/client/default/index',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -60,7 +59,7 @@ $config = [
             'rules' => [
                 '<action>' => 'site/<action>',
                 //роут постів для гостя
-                'view-post/<id:\d+>' => 'site/view-post',
+                'article/<id:\d+>' => 'site/article',
 
                 'post/<id:\d+>' => 'client/default/post',
                 'post/<action>' => 'client/post',
@@ -73,28 +72,9 @@ $config = [
     'modules' => [
         'admin' => [
             'class' => 'app\modules\admin\Module',
-            'layout' => '@app/views/layouts/admin.php',
-            'as access' => [
-                'class' => 'yii\filters\AccessControl',
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['admin'],
-                    ]
-                ]
-            ],
         ],
         'client' => [
             'class' => 'app\modules\client\Module',
-            'as access' => [
-                'class' => 'yii\filters\AccessControl',
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['author'],
-                    ],
-                ],
-            ],
         ],
         'debug' => [
             'class' => 'yii\debug\Module',

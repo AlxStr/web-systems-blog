@@ -53,8 +53,12 @@ class m181118_230826_add_data_to_users_table extends Migration
     public function safeDown()
     {
         echo "m181118_230826_add_data_to_users_table cannot be reverted.\n";
+        for($i=5; $i>=1; $i--){
+            $this->delete('{{%user}}', ['id' => $i]);
+        }
 
-        return false;
+
+        return true;
     }
 
 }

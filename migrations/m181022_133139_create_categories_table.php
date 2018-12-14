@@ -24,5 +24,7 @@ class m181022_133139_create_categories_table extends Migration
     public function safeDown()
     {
         $this->dropTable('{{%categories}}');
+
+        return true;
     }
 }

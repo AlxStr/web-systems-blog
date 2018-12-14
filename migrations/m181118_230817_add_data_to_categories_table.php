@@ -25,7 +25,11 @@ class m181118_230817_add_data_to_categories_table extends Migration
     public function safeDown()
     {
         echo "m181118_230817_add_data_to_categories_table cannot be reverted.\n";
+        for($i=5; $i>=1; $i--){
+            $this->delete('{{%categories}}', ['id' => $i]);
+        }
 
-        return false;
+
+        return true;
     }
 }

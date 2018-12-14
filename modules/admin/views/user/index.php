@@ -43,7 +43,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'filter' => app\models\User::getStatusList(),
                     'value' =>  'statusName',
             ],
-            'created_at:datetime',
             ['class' => 'yii\grid\ActionColumn', 'template' => '{delete}'],
 
 

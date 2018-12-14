@@ -1,3 +1,9 @@
+<?php
+use yii\helpers\Html;
+use yii\helpers\Url;
+?>
+
+
 <div class="admin-default-index">
     <div class="col-lg-3 col-xs-6">
         <!-- small box -->
@@ -10,9 +16,7 @@
             <div class="icon">
                 <i class="fa fa-user"></i>
             </div>
-            <a href="/admin/user/" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
+            <?= Html::a('More info', Url::to('admin/user', true), ['class' => 'small-box-footer']) ?>
         </div>
     </div>
 
@@ -26,9 +30,7 @@
             <div class="icon">
                 <i class="fa fa-clipboard"></i>
             </div>
-            <a href="/admin/post/" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
+            <?= Html::a('More info', Url::to('admin/post', true), ['class' => 'small-box-footer']) ?>
         </div>
     </div>
 
@@ -42,9 +44,8 @@
             <div class="icon">
                 <i class="fa fa-list-ol"></i>
             </div>
-            <a href="/admin/category/" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
+
+            <?= Html::a('More info', Url::to('admin/category', true), ['class' => 'small-box-footer']) ?>
         </div>
     </div>
 </div>

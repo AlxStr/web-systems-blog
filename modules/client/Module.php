@@ -2,19 +2,30 @@
 
 namespace app\modules\client;
 
+use yii\filters\AccessControl;
+
 /**
  * client module definition class
  */
 class Module extends \yii\base\Module
 {
-    /**
-     * {@inheritdoc}
-     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['author'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public $controllerNamespace = 'app\modules\client\controllers';
 
-    /**
-     * {@inheritdoc}
-     */
     public function init()
     {
         parent::init();

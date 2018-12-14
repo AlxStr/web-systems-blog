@@ -50,10 +50,14 @@ class PostSearch extends Post
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'id' => SORT_DESC,
+                    'updated_at' => SORT_DESC,
                 ]
             ],
         ]);
+
+        if($params['only'] == 'active'){
+            $dataProvider->query->andFilterWhere(['status'=> 1]);
+        }
 
         $this->load($params);
 

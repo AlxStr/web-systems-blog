@@ -41,7 +41,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'title',
             'logo',
-            'author',
             'description:ntext',
             'body:ntext',
         ],

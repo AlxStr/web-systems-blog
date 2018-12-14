@@ -33,8 +33,12 @@ class m181118_231742_add_data_to_posts_table extends Migration
     public function safeDown()
     {
         echo "m181118_231742_add_data_to_posts_table cannot be reverted.\n";
+        for($i=200; $i>=1; $i--){
+            $this->delete('{{%posts}}', ['id' => $i]);
+        }
 
-        return false;
+
+        return true;
     }
 
 }
