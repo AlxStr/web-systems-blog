@@ -72,6 +72,24 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
         ];
     }
 
+
+
+    public static function signup(string $username, string $email, string $password){
+        $user = new User();
+        $user->username = $username;
+        $user->email = $email;
+        $user->setPassword($password);
+        $user->generateAuthKey();
+
+        $user->save();
+        // set role (RBAC)
+        $authManager = Yii::$app->authManager;
+        $role = $authManager->getRole('author');
+
+        $authManager->assign($role, $user->getId());
+        return $user;
+    }
+
     /**
      * @inheritdoc
      */

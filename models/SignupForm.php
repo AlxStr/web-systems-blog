@@ -24,7 +24,7 @@ class SignupForm extends Model
             ['username', 'trim'],
             ['username', 'required'],
             ['username', 'unique', 'targetClass' => '\app\models\User', 'message' => 'This username has already been taken.'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
+            ['username', 'string', 'min' => 3, 'max' => 255],
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
@@ -46,18 +46,7 @@ class SignupForm extends Model
             return null;
         }
 
-        $user = new User();
-        $user->username = $this->username;
-        $user->email = $this->email;
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
-
-        $user->save();
-        // set role (RBAC)
-        $authManager = Yii::$app->authManager;
-        $role = $authManager->getRole('author');
-
-        $authManager->assign($role, $user->getId());
+        $user = User::signup($this->username, $this->email, $this->password);
 
         return $user;
     }
