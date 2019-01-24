@@ -57,14 +57,10 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '<action>' => 'site/<action>',
-                //роут постів для гостя
-                'article/<id:\d+>' => 'site/article',
-
-                'post/<id:\d+>' => 'client/default/post',
-                'post/<action>' => 'client/post',
-                'post/<action>/<id:\d+>' => 'client/post/<action>',
-                'page-<page:\d+>/per-page-<per-page:\d+>' => 'client/default/index',
+                'post/<id:\d+>' => 'site/post',
+                '<action:\w+>' => 'site/<action>',
+                'client/post/<action:(view|update|delete)>/<id:\d+>' => 'client/post/<action>',
+                'client/post/<action:\w+>' => 'client/post/<action>',
             ],
         ],
     ],
