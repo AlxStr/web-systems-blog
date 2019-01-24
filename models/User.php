@@ -40,41 +40,8 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
         return '{{%user}}';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
+    public static function signup(string $username, string $email, string $password)
     {
-        return [
-            TimestampBehavior::className(),
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
-            [['username', 'email'], 'required'],
-            ['email', 'email'],
-        ];
-    }
-
-    public function attributeLabels()
-    {
-        return [
-            'username' => 'Login',
-            'email' => 'Email',
-            'password' => 'Password',
-        ];
-    }
-
-
-
-    public static function signup(string $username, string $email, string $password){
         $user = new User();
         $user->username = $username;
         $user->email = $email;
@@ -88,6 +55,32 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
 
         $authManager->assign($role, $user->getId());
         return $user;
+    }
+
+    /**
+     * Generates password hash from password and sets it to the model
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * Generates "remember me" authentication key
+     */
+    public function generateAuthKey()
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getId()
+    {
+        return $this->getPrimaryKey();
     }
 
     /**
@@ -152,98 +145,14 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
         return $timestamp + $expire >= time();
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getId()
-    {
-        return $this->getPrimaryKey();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAuthKey()
-    {
-        return $this->auth_key;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function validateAuthKey($authKey)
-    {
-        return $this->getAuthKey() === $authKey;
-    }
-
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return boolean if password provided is valid for current user
-     */
-    public function validatePassword($password)
-    {
-        return Yii::$app->security->validatePassword($password, $this->password_hash);
-    }
-
-    /**
-     * Generates password hash from password and sets it to the model
-     *
-     * @param string $password
-     */
-    public function setPassword($password)
-    {
-        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
-    }
-
-    /**
-     * Generates "remember me" authentication key
-     */
-    public function generateAuthKey()
-    {
-        $this->auth_key = Yii::$app->security->generateRandomString();
-    }
-
-    /**
-     * Generates new password reset token
-     */
-    public function generatePasswordResetToken()
-    {
-        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
-    }
-    /**
-     * Removes password reset token
-     */
-    public function removePasswordResetToken()
-    {
-        $this->password_reset_token = null;
-    }
-
-    // Hybrid RBAC manager methods
     public static function findAuthRoleIdentity($id)
     {
         return static::findOne($id);
     }
+
     public static function findAuthIdsByRoleName($roleName)
     {
         return static::find()->where(['role' => $roleName])->select('id')->column();
-    }
-    public function getAuthRoleNames()
-    {
-        return (array)$this->role;
-    }
-    public function addAuthRoleName($roleName)
-    {
-        $this->updateAttributes(['role' => $this->role = $roleName]);
-    }
-    public function removeAuthRoleName($roleName)
-    {
-        $this->updateAttributes(['role' => $this->role = null]);
-    }
-    public function clearAuthRoleNames()
-    {
-        $this->updateAttributes(['role' => $this->role = null]);
     }
 
     public static function onRenameRole(RenameRoleEvent $event)
@@ -266,6 +175,107 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
         self::updateAll(['role' => null]);
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
+            [['username', 'email'], 'required'],
+            ['email', 'email'],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Login',
+            'email' => 'Email',
+            'password' => 'Password',
+        ];
+    }
+
+    // Hybrid RBAC manager methods
+
+    public function isActive(): bool
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validateAuthKey($authKey)
+    {
+        return $this->getAuthKey() === $authKey;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAuthKey()
+    {
+        return $this->auth_key;
+    }
+
+    /**
+     * Validates password
+     *
+     * @param string $password password to validate
+     * @return boolean if password provided is valid for current user
+     */
+    public function validatePassword($password)
+    {
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    /**
+     * Generates new password reset token
+     */
+    public function generatePasswordResetToken()
+    {
+        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+    }
+
+    /**
+     * Removes password reset token
+     */
+    public function removePasswordResetToken()
+    {
+        $this->password_reset_token = null;
+    }
+
+    public function getAuthRoleNames()
+    {
+        return (array)$this->role;
+    }
+
+    public function addAuthRoleName($roleName)
+    {
+        $this->updateAttributes(['role' => $this->role = $roleName]);
+    }
+
+    public function removeAuthRoleName($roleName)
+    {
+        $this->updateAttributes(['role' => $this->role = null]);
+    }
+
+    public function clearAuthRoleNames()
+    {
+        $this->updateAttributes(['role' => $this->role = null]);
+    }
 
     public function getStatusName(){
         $list = self::getStatusList();

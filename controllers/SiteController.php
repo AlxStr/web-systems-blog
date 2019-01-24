@@ -3,16 +3,16 @@
 namespace app\controllers;
 
 use app\models\Category;
+use app\models\forms\LoginForm;
 use app\models\Post;
 use app\models\PostSearch;
-use app\models\SignupForm;
-use app\models\User;
+use app\models\services\LoginService;
+use app\models\services\SignupService;
+use app\models\forms\SignupForm;
 use Yii;
 use yii\filters\AccessControl;
-use yii\web\Controller;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use yii\web\NotFoundHttpException;
+use yii\web\Controller;
 
 class SiteController extends Controller
 {
@@ -58,8 +58,9 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionArticle($id){
-        $post = $this->findPost($id);
+    public function actionPost($id)
+    {
+        $post = Post::findPost($id);
         $title_cat = Category::getTitle($post->category_id);
         return $this->render('view', [
             'post' => $post,
@@ -67,18 +68,7 @@ class SiteController extends Controller
         ]);
     }
 
-    protected function findPost($id)
-    {
-        if (($model = Post::findOne($id)) !== null) {
-            return $model;
-        }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function actions()
     {
         return [
@@ -98,16 +88,17 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        $model = new LoginForm();
+        $form = new LoginForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            (new LoginService())->login($form);
             return $this->goBack();
         }
 
-        $model->password = '';
+        $form->password = '';
 
         return $this->render('login', [
-            'model' => $model,
+            'model' => $form,
         ]);
     }
 
@@ -120,18 +111,17 @@ class SiteController extends Controller
 
     public function actionSignup()
     {
-        $model = new SignupForm();
+        $form = new SignupForm();
 
-        if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
-                if (Yii::$app->getUser()->login($user)) {
-                    return $this->goHome();
-                }
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            $user = (new SignupService())->signup($form);
+            if (Yii::$app->getUser()->login($user)) {
+                return $this->goHome();
             }
         }
 
         return $this->render('signup', [
-            'model' => $model,
+            'model' => $form,
         ]);
     }
 }
