@@ -7,12 +7,15 @@ $config = [
     'id' => 'basic',
     'name' => getenv('APP_NAME'),
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        'app\bootstrap\SetUp',
+    ],
     'language'=> getenv('APP_LANG'),
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
-        '@upload_dir' => dirname(__DIR__) . '/web/images/',
+        '@upload' => '@app/web/'.getenv('UPLOAD_IMAGES_FOLDER').'/',
     ],
     'components' => [
         'request' => [
@@ -58,6 +61,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 'post/<id:\d+>' => 'site/post',
+                '<action:(login|logout|signup)>'=>'auth/<action>',
                 '<action:\w+>' => 'site/<action>',
                 'client/post/<action:(view|update|delete)>/<id:\d+>' => 'client/post/<action>',
                 'client/post/<action:\w+>' => 'client/post/<action>',

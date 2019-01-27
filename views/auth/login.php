@@ -12,14 +12,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-login">
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <?php if (Yii::$app->session->hasFlash('banned')): ?>
-        <div class="alert alert-danger alert-dismissable">
-            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-            <?= Yii::$app->session->getFlash('banned') ?>
-        </div>
-    <?php endif; ?>
-
     <p>Please fill out the following fields to login:</p>
 
     <?php $form = ActiveForm::begin([
