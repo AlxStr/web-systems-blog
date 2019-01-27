@@ -9,35 +9,26 @@ use yii\data\ActiveDataProvider;
 /**
  * PostSearch represents the model behind the search form of `app\models\Post`.
  */
-class PostSearch extends Post
+class PostSearch extends Model
 {
-    /**
-     * {@inheritdoc}
-     */
+    public $id;
+    public $title;
+    public $category_id;
+    public $logo;
+    public $body;
+    public $status;
+    public $date_create;
+    public $date_update;
+
     public function rules()
     {
         return [
-            [['id', 'category_id', 'created_at', 'updated_at'], 'integer'],
-            [['logo', 'title', 'body', 'status'], 'safe'],
+            [['id', 'category_id'], 'integer'],
+            [['title', 'status'], 'safe'],
+            [['date_create', 'date_update'], 'date', 'format' => 'php:Y-m-d'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function scenarios()
-    {
-        // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
-    }
-
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params)
     {
         $query = Post::find();
@@ -55,13 +46,14 @@ class PostSearch extends Post
             ],
         ]);
 
-        if($params['only'] == 'active'){
+        if(isset($params['only']) && $params['only'] == 'active'){
             $dataProvider->query->andFilterWhere(['status'=> 1]);
         }
 
         $this->load($params);
 
         if (!$this->validate()) {
+            $query->where('0=1');
             return $dataProvider;
         }
 
@@ -70,13 +62,15 @@ class PostSearch extends Post
             'id' => $this->id,
             'category_id' => $this->category_id,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'logo', $this->logo])
             ->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'body', $this->body]);
+            ->andFilterWhere(['like', 'body', $this->body])
+            ->andFilterWhere(['>=', 'created_at', $this->date_create ? strtotime($this->date_create . ' 00:00:00') : null])
+            ->andFilterWhere(['<=', 'created_at', $this->date_create ? strtotime($this->date_create . ' 23:59:59') : null])
+            ->andFilterWhere(['>=', 'updated_at', $this->date_update ? strtotime($this->date_update . ' 00:00:00') : null])
+            ->andFilterWhere(['<=', 'updated_at', $this->date_update ? strtotime($this->date_update . ' 23:59:59') : null]);
 
         return $dataProvider;
     }

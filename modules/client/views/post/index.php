@@ -1,5 +1,6 @@
 <?php
 
+use kartik\date\DatePicker;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -20,28 +21,61 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Post', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-            ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update}'],
+    <div class="box">
+        <div class="box-body">
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+                    ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update}'],
 
-            'title',
-            [
-                'attribute' => 'status',
-                'value' => 'statusName',
-                'filter' => app\models\Post::getStatusList(),
-            ],
+                    'title',
+                    [
+                        'attribute' => 'status',
+                        'value' => 'statusName',
+                        'filter' => app\models\Post::getStatusList(),
+                    ],
 
-            [
-                'attribute' => 'category_id',
-                'value' => 'category.title',
-                'filter' => $categories,
-            ],
-            'logo',
+                    [
+                        'attribute' => 'category_id',
+                        'value' => 'category.title',
+                        'filter' => $categories,
+                    ],
 
-            ['class' => 'yii\grid\ActionColumn', 'template' => '{delete}'],
-        ],
-    ]); ?>
+                    [
+                        'attribute' => 'created_at',
+                        'filter' => DatePicker::widget([
+                            'model' => $searchModel,
+                            'attribute' => 'date_create',
+                            'type' => DatePicker::TYPE_COMPONENT_APPEND,
+                            'pluginOptions' => [
+                                'todayHighlight'=>true,
+                                'autoclose'=>true,
+                                'format' => 'yyyy-mm-dd',
+                            ]
+                        ]),
+                        'format' => 'datetime',
+                    ],
+                    [
+                        'attribute' => 'updated_at',
+                        'filter' => DatePicker::widget([
+                            'model' => $searchModel,
+                            'attribute' => 'date_update',
+                            'type' => DatePicker::TYPE_COMPONENT_APPEND,
+                            'pluginOptions' => [
+                                'todayHighlight'=>true,
+                                'autoclose'=>true,
+                                'format' => 'yyyy-mm-dd',
+                            ]
+                        ]),
+                        'format' => 'datetime',
+                    ],
+
+                    ['class' => 'yii\grid\ActionColumn', 'template' => '{delete}'],
+                ],
+            ]); ?>
+        </div>
+    </div>
+
 </div>
