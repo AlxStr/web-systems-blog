@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\web\NotFoundHttpException;
 
 /**
  * This is the model class for table "posts".
@@ -17,8 +18,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class Post extends \yii\db\ActiveRecord
 {
-
-    public $imageFile;
+    const INACTIVE = 0;
+    const ACTIVE = 1;
     /**
      * {@inheritdoc}
      */
@@ -27,39 +28,36 @@ class Post extends \yii\db\ActiveRecord
         return '{{%posts}}';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
+    public static function create($title, $categoryId, $description, $body, $logo = null, $status = Post::INACTIVE): self
     {
-        return [
-            [['category_id'], 'integer'],
-            [['body', 'description'], 'string'],
-            [['title', 'body'], 'required'],
-            [['description'], 'required'],
-            [['title', 'logo'], 'string', 'max' => 255],
-            [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
-        ];
+        $post = new static();
+        $post->title = $title;
+        $post->category_id = $categoryId;
+        $post->description = $description;
+        $post->body = $body;
+        $post->author = Yii::$app->user->identity->getId();
+        $post->status = Post::INACTIVE;
+        $post->logo = $logo;
+        $post->status = $status;
+        $post->created_at = time();
+        $post->updated_at = time();
+
+        return $post;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
+    public function edit($title, $categoryId, $description, $body, $logo = null): void
     {
-        return [
-            'id' => 'ИД',
-            'category_id' => 'Категория',
-            'logo' => 'Логотип',
-            'status' => 'Статус',
-            'title' => 'Заголовок',
-            'description' => 'Описание',
-            'body' => 'Текст',
-            'author' => 'Автор'
-        ];
+        $this->title = $title;
+        $this->category_id = $categoryId;
+        $this->description = $description;
+        $this->body = $body;
+        $logo != null ? $this->logo = $logo: null;
+        $this->updated_at = time();
     }
 
+    public function activate(){
+        return $this->status = Post::ACTIVE;
+    }
     /**
      * @inheritdoc
      */
@@ -70,9 +68,15 @@ class Post extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
+    public static function findPost($id)
+    {
+        if (($model = Post::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
     public function getCategory()
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);

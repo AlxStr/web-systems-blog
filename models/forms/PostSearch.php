@@ -1,8 +1,8 @@
 <?php
 
-namespace app\models;
+namespace app\models\forms;
 
-use Yii;
+use app\models\Post;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -19,6 +19,7 @@ class PostSearch extends Model
     public $status;
     public $date_create;
     public $date_update;
+
 
     public function rules()
     {
@@ -46,8 +47,9 @@ class PostSearch extends Model
             ],
         ]);
 
-        if(isset($params['only']) && $params['only'] == 'active'){
-            $dataProvider->query->andFilterWhere(['status'=> 1]);
+        if(isset($params['only_active']) && $params['only_active'])
+        {
+            $dataProvider->query->andFilterWhere(['status'=> Post::ACTIVE]);
         }
 
         $this->load($params);
