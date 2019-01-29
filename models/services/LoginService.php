@@ -2,39 +2,35 @@
 
 namespace app\models\services;
 
-use app\models\LoginForm;
-use app\models\User;
 use Yii;
+use app\models\forms\LoginForm;
+use app\models\repositories\UserRepository;
+use app\models\User;
 
 class LoginService
 {
-    private $_user = false;
+    private $users;
 
-    public function login($form)
+    public function __construct(UserRepository $users)
     {
-        if ($user = $this->getUser($form->username)) {
-            return Yii::$app->user->login($user, true ? 3600 * 24 * 30 : 0);
-        }
-        return false;
+        $this->users = $users;
     }
 
-    public function getUser($username)
-    {
-        if ($this->_user === false) {
-            $this->_user = User::findByUsername($username);
-        }
-
-        return $this->_user;
+    public function login(LoginForm $form){
+        $user = $this->auth($form);
+        return Yii::$app->user->login($user, $form->rememberMe ? 3600 * 24 * 30 : 0);
     }
 
-    public function validatePassword(LoginForm $form)
+    public function auth(LoginForm $form): User
     {
-        if (!$form->hasErrors()) {
-            $user = User::findByUsername($form->username);
-            if (!$user || !$user->validatePassword($form->password)) {
-                return ('Incorrect username or password.');
-            }
+        $user = $this->users->findByUsernameOrEmail($form->username);
+
+        if (!$user || !$user->validatePassword($form->password)) {
+            throw new \DomainException('Undefined user or password.');
         }
-        return null;
+        if (!$user->isActive()){
+            throw new \DomainException('User is banned.');
+        }
+        return $user;
     }
 }

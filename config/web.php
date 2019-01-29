@@ -28,7 +28,7 @@ $config = [
         ],
         'user' => [
             'identityClass' => 'app\models\User',
-            'loginUrl' => ['site/login'],
+            'loginUrl' => ['auth/login'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -60,9 +60,9 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'post/<id:\d+>' => 'site/post',
+                'post/<id:\d+>' => 'post/view',
+                'post/' => 'post/index',
                 '<action:(login|logout|signup)>'=>'auth/<action>',
-                '<action:\w+>' => 'site/<action>',
                 'client/post/<action:(view|update|delete)>/<id:\d+>' => 'client/post/<action>',
                 'client/post/<action:\w+>' => 'client/post/<action>',
             ],
@@ -96,7 +96,6 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 }
 

@@ -1,11 +1,12 @@
 <?php
 
+use app\models\Post;
 use kartik\date\DatePicker;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\PostSearch */
+/* @var $searchModel app\models\forms\PostSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Posts';
@@ -30,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update} {active}',
                         'buttons' => [
                             'active' => function ($url, $model, $key) {
-                                if ($model->status == 1) return false;
+                                if ($model->status === Post::ACTIVE) return false;
                                 return Html::a('<span class="glyphicon glyphicon-ok" title="Активно"></span>', $url);
                             },
                         ],

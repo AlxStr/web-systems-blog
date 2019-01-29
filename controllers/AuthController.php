@@ -4,8 +4,8 @@ namespace app\controllers;
 
 use Yii;
 use app\models\forms\LoginForm;
-use app\models\services\auth\LoginService;
-use app\models\services\auth\SignupService;
+use app\models\services\LoginService;
+use app\models\services\SignupService;
 use app\models\forms\SignupForm;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;

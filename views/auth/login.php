@@ -40,6 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php ActiveForm::end(); ?>
 
     <div class="col-lg-offset-1" style="color:#999;">
-        No login? - <?= Html::a('Register', ['/site/signup']) ?>
+        No login? - <?= Html::a('Register', ['auth/signup']) ?>
     </div>
 </div>

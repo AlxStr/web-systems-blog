@@ -11,6 +11,7 @@ $config = [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
+        '@upload' => '@app/web/'.getenv('UPLOAD_IMAGES_FOLDER').'/',
     ],
     'components' => [
         'cache' => [

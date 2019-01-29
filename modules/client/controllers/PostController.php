@@ -2,26 +2,35 @@
 
 namespace app\modules\client\controllers;
 
-use app\models\UploadFile;
+use app\models\forms\PostForm;
+use app\models\services\PostManageService;
+use app\models\services\UploadService;
 use app\models\Category;
 use Yii;
 use app\models\Post;
-use app\models\PostSearch;
+use app\models\forms\PostSearch;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
 
 /**
  * PostController implements the CRUD actions for Post model.
  */
 class PostController extends Controller
 {
+
+    private $postService;
+
     /**
-     * {@inheritdoc}
+     * PostController constructor.
      */
+    public function __construct($id, $module, PostManageService $postService, $config = [])
+    {
+        parent::__construct($id, $module, $config);
+        $this->postService = $postService;
+    }
+
     public function behaviors()
     {
         return [
@@ -40,8 +49,6 @@ class PostController extends Controller
      */
     public function actionIndex()
     {
-        if (Yii::$app->user->can('admin'))
-            $this->redirect(Url::toRoute('/admin/post/'));
 
         $searchModel = new PostSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -82,24 +89,23 @@ class PostController extends Controller
      */
     public function actionCreate()
     {
-            $model = new Post();
-            $model->author = Yii::$app->user->getId();
             $categories = ArrayHelper::map(Category::find()->all(), 'id', 'title');
 
-            $fileModel = new UploadFile();
-            if ($model->load(Yii::$app->request->post())) {
-                $fileModel->imageFile = UploadedFile::getInstance($model, 'imageFile');
-                if (isset($fileModel->imageFile)){
-                    if ($fileModel->upload()) {
-                        $model->logo = $fileModel->imageFile->baseName . '.' . $fileModel->imageFile->extension;
-                    }
+            $uploadService = Yii::$container->get(UploadService::class);
+            $form = new PostForm();
+            if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+                try {
+                    $form->logo = $uploadService->checkUpload($form);
+                    $post = $this->postService->create($form);
+                    return $this->redirect(['view', 'id' => $post->id]);
+                } catch (\DomainException $e) {
+                    Yii::$app->errorHandler->logException($e);
+                    Yii::$app->session->setFlash('error', $e->getMessage());
                 }
-                $model->save();
-                return $this->redirect(['view', 'id' => $model->id]);
             }
 
             return $this->render('create', [
-                'model' => $model,
+                'model' => $form,
                 'categories' => $categories,
             ]);
     }
@@ -113,33 +119,33 @@ class PostController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $post = $this->findModel($id);
 
-        if (Yii::$app->user->can('updateOwnPost', ['post' => $model])) {
-            $categories = Category::find()->all();
-            $categories = ArrayHelper::map($categories, 'id', 'title');
-
-            if ($model->load(Yii::$app->request->post())) {
-                $fileModel = new UploadFile();
-                $fileModel->imageFile = UploadedFile::getInstance($model, 'imageFile');
-                if (isset($fileModel->imageFile)){
-                    if ($fileModel->upload()) {
-                        $model->logo = $fileModel->imageFile->baseName . '.' . $fileModel->imageFile->extension;
-                    }
-                }
-                $model->save();
-                return $this->redirect(['view', 'id' => $model->id]);
-
-            }
-
-            return $this->render('update', [
-                'model' => $model,
-                'categories' => $categories,
-
-            ]);
+        if (!Yii::$app->user->can('updateOwnPost', ['post' => $post])){
+            throw new \yii\web\HttpException(403, 'You don\'t have permission to access');
         }
 
-        throw new \yii\web\HttpException(403, 'You don\'t have permission to access');
+        $categories = Category::find()->all();
+        $categories = ArrayHelper::map($categories, 'id', 'title');
+
+        $uploadService = Yii::$container->get(UploadService::class);
+        $form = new PostForm($post);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try {
+                $form->logo = $uploadService->checkUpload($form);
+                $this->postService->edit($post->id, $form);
+                return $this->redirect(['view', 'id' => $post->id]);
+            } catch (\DomainException $e) {
+                Yii::$app->errorHandler->logException($e);
+                Yii::$app->session->setFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render('update', [
+            'model' => $form,
+            'categories' => $categories,
+
+        ]);
     }
 
     /**
@@ -152,8 +158,8 @@ class PostController extends Controller
     public function actionDelete($id)
     {
         if (Yii::$app->user->can('updateOwnPost', ['post' => $model = $this->findModel($id)])) {
-            $model->delete();
 
+            $this->postService->remove($id);
             return $this->redirect(['index']);
         }
         throw new \yii\web\HttpException(403, 'You don\'t have permission to access');

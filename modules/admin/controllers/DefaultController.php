@@ -2,8 +2,8 @@
 
 namespace app\modules\admin\controllers;
 
-use app\models\CategorySearch;
-use app\models\PostSearch;
+use app\models\forms\CategorySearch;
+use app\models\forms\PostSearch;
 use app\models\User;
 use app\modules\admin\models\UserSearch;
 use Yii;

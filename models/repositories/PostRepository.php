@@ -15,6 +15,13 @@ class PostRepository
         return $post;
     }
 
+    public function remove(Post $post): void
+    {
+        if (!$post->delete()) {
+            throw new \RuntimeException('Removing error.');
+        }
+    }
+
     public function getAllPosts()
     {
         return Post::find()->all();

@@ -2,9 +2,12 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\forms\CategoryForm;
+use app\models\repositories\CategoryRepository;
+use app\models\services\CategoryManageService;
 use Yii;
 use app\models\Category;
-use app\models\CategorySearch;
+use app\models\forms\CategorySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -14,9 +17,13 @@ use yii\filters\VerbFilter;
  */
 class CategoryController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
+    private $categoryService;
+
+    public function __construct($id, $module, CategoryManageService $catSer, $config = [])
+    {
+        parent::__construct($id, $module, $config);
+        $this->categoryService = $catSer;
+    }
     public function behaviors()
     {
         return [
@@ -64,14 +71,15 @@ class CategoryController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Category();
+        $form = new CategoryForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            $cat = $this->categoryService->create($form);
+            return $this->redirect(['view', 'id' => $cat->id]);
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model' => $form,
         ]);
     }
 
@@ -84,14 +92,16 @@ class CategoryController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $cat = $this->findModel($id);
+        $form = new CategoryForm($cat);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            $this->categoryService->edit($id, $form);
+            return $this->redirect(['view', 'id' => $cat->id]);
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'model' => $form,
             'categories'
         ]);
     }
@@ -105,23 +115,15 @@ class CategoryController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->categoryService->remove($id);
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the Category model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Category the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
+    protected function findModel($id): Category
     {
         if (($model = Category::findOne($id)) !== null) {
             return $model;
         }
-
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

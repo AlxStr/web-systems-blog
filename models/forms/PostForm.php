@@ -20,9 +20,6 @@ class PostForm extends Model
     public $created_at;
     public $updated_at;
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
@@ -36,9 +33,6 @@ class PostForm extends Model
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels()
     {
         return [

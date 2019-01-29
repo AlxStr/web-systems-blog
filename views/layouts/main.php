@@ -39,20 +39,20 @@ AppAsset::register($this);
 
     $menuItems = [
         ['label' => 'Home', 'url' => ['/']],
+        ['label' => 'Posts', 'url' => ['post/index']],
     ];
 
 
 
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => 'Login', 'url' => ['auth/login']];
     } else {
-
-        $menuItems[] = ['label' => 'Posts', 'url' => ['/client/post/']];
-        $menuItems[] = ['label' => 'Profile', 'url' => ['/client/profile/']];
+        $menuItems[] = ['label' => 'My Posts', 'url' => ['client/post/index']];
+        $menuItems[] = ['label' => 'My Profile', 'url' => ['client/profile/index']];
 
 
         $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
+            . Html::beginForm(['auth/logout'], 'post')
             . Html::submitButton(
                 'Logout (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']

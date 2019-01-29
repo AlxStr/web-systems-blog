@@ -2,11 +2,14 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\forms\PostForm;
+use app\models\services\PostManageService;
+use app\models\services\UploadService;
 use Yii;
 use app\models\UploadFile;
 use app\models\Category;
 use app\models\Post;
-use app\models\PostSearch;
+use app\models\forms\PostSearch;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -18,9 +21,14 @@ use yii\web\UploadedFile;
  */
 class PostController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
+    private $postService;
+
+    public function __construct($id, $module, PostManageService $postService, $config = [])
+    {
+        parent::__construct($id, $module, $config);
+        $this->postService = $postService;
+    }
+
     public function behaviors()
     {
         return [
@@ -75,26 +83,25 @@ class PostController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Post();
-        $model->author = Yii::$app->user->getId();
-        $model->status = '1'; // admin posts active by default
         $categories = ArrayHelper::map(Category::find()->all(), 'id', 'title');
 
-        $fileModel = new UploadFile();
-        if ($model->load(Yii::$app->request->post())) {
-            $fileModel->imageFile = UploadedFile::getInstance($model, 'imageFile');
-            if (isset($fileModel->imageFile)) {
-                if ($fileModel->upload()) {
-                    $model->logo = $fileModel->imageFile->baseName . '.' . $fileModel->imageFile->extension;
-                }
+        $uploadService = Yii::$container->get(UploadService::class);
+        $form = new PostForm();
+        $form->author = Yii::$app->user->getId();
+        $form->status = Post::ACTIVE;
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try {
+                $form->logo = $uploadService->checkUpload($form);
+                $post = $this->postService->create($form);
+                return $this->redirect(['view', 'id' => $post->id]);
+            } catch (\DomainException $e) {
+                Yii::$app->errorHandler->logException($e);
+                Yii::$app->session->setFlash('error', $e->getMessage());
             }
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
         }
 
-
         return $this->render('create', [
-            'model' => $model,
+            'model' => $form,
             'categories' => $categories,
         ]);
     }
@@ -108,25 +115,25 @@ class PostController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-
+        $post = $this->findModel($id);
         $categories = Category::find()->all();
         $categories = ArrayHelper::map($categories, 'id', 'title');
 
-        if ($model->load(Yii::$app->request->post())) {
-            $fileModel = new UploadFile();
-            $fileModel->imageFile = UploadedFile::getInstance($model, 'imageFile');
-            if (isset($fileModel->imageFile)) {
-                if ($fileModel->upload()) {
-                    $model->logo = $fileModel->imageFile->baseName . '.' . $fileModel->imageFile->extension;
-                }
+        $uploadService = Yii::$container->get(UploadService::class);
+        $form = new PostForm($post);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try {
+                $form->logo = $uploadService->checkUpload($form);
+                $this->postService->edit($post->id, $form);
+                return $this->redirect(['view', 'id' => $post->id]);
+            } catch (\DomainException $e) {
+                Yii::$app->errorHandler->logException($e);
+                Yii::$app->session->setFlash('error', $e->getMessage());
             }
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'model' => $form,
             'categories' => $categories,
         ]);
     }
@@ -140,8 +147,7 @@ class PostController extends Controller
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
-        $model->delete();
+        $this->postService->remove($id);
 
         return $this->redirect(['index']);
     }
@@ -162,13 +168,9 @@ class PostController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-
-    // Method makes post status active
     public function actionActive($id)
     {
-        $model = $this->findModel($id);
-        $model->status = 1;
-        $model->save();
+        $this->postService->activate($id);
 
         return $this->redirect(['index']);
     }

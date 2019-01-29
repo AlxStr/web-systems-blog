@@ -4,9 +4,7 @@ namespace app\models\forms;
 
 use yii\base\Model;
 
-/**
- * Signup form
- */
+
 class SignupForm extends Model
 {
 
@@ -14,9 +12,7 @@ class SignupForm extends Model
     public $email;
     public $password;
 
-    /**
-     * @return array the validation rules.
-     */
+
     public function rules()
     {
         return [
@@ -30,7 +26,16 @@ class SignupForm extends Model
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'This email address has already been taken.'],
             ['password', 'required'],
-            ['password', 'string', 'min' => 6],
+            ['password', 'string', 'min' => 6, 'max' => 16],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Login',
+            'email' => 'Email',
+            'password' => 'Password',
         ];
     }
 }

@@ -14,34 +14,21 @@ use Yii;
  */
 class Category extends \yii\db\ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function tableName()
     {
         return '{{%categories}}';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
+    public static function create($title)
     {
-        return [
-            [['title'], 'required'],
-            [['title'], 'string', 'max' => 255],
-        ];
-    }
+        $cat = new static();
+        $cat->title = $title;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
+        return $cat;
+    }
+    public function edit($title)
     {
-        return [
-            'id' => 'ID',
-            'title' => 'Title',
-        ];
+        $this->title = $title;
     }
 
     /**
@@ -49,7 +36,7 @@ class Category extends \yii\db\ActiveRecord
      */
     public function getPosts()
     {
-        return $this->hasMany(Posts::className(), ['category_id' => 'id']);
+        return $this->hasMany(Post::className(), ['category_id' => 'id']);
     }
 
     public static function getTitle($id)

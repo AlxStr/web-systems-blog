@@ -2,11 +2,18 @@
 
 namespace app\models\services;
 
-use app\models\SignupForm;
+use app\models\forms\SignupForm;
+use app\models\repositories\UserRepository;
 use app\models\User;
 
 class SignupService
 {
+    private $users;
+
+    public function __construct(UserRepository $users)
+    {
+        $this->users = $users;
+    }
 
     public function signup(SignupForm $form): User
     {

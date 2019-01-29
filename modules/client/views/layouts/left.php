@@ -18,9 +18,8 @@
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
                 'items' => [
-                    ['label' => 'Home', 'icon' => 'fas fa-home', 'url' => ['/client/default/']],
-                    ['label' => 'My Posts', 'icon' => 'file-text-o', 'url' => ['/client/post/']],
-                    ['label' => 'Profile', 'url' => ['/client/profile/']],
+                    ['label' => 'My Posts', 'icon' => 'file-text-o', 'url' => ['post/index']],
+                    ['label' => 'Profile', 'url' => ['profile/index']],
                 ],
             ]
         ) ?>
