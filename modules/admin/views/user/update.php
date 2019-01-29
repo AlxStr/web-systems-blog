@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\User */
@@ -14,8 +15,18 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
+    <?php $form = ActiveForm::begin(); ?>
+
+    <?= $form->field($model, 'username')->textInput() ?>
+
+    <?= $form->field($model, 'email')->textInput() ?>
+
+    <?= $form->field($model, 'role')->dropDownList(['author' => 'Author', 'admin' => 'Admin']); ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
 
 </div>

@@ -32,12 +32,18 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
     const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 10;
 
-    /**
-     * @inheritdoc
-     */
+
     public static function tableName()
     {
         return '{{%user}}';
+    }
+
+
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+        ];
     }
 
     public static function signup(string $username, string $email, string $password)
@@ -55,6 +61,25 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
 
         $authManager->assign($role, $user->getId());
         return $user;
+    }
+
+    public static function create(string $username, string $email, string $password, string $role): self
+    {
+        $user = new User();
+        $user->username = $username;
+        $user->email = $email;
+        $user->role = $role;
+        $user->setPassword($password);
+        $user->generateAuthKey();
+        return $user;
+    }
+
+    public function edit(string $username, string $email, string $role): void
+    {
+        $this->username = $username;
+        $this->email = $email;
+        $this->role = $role;
+        $this->updated_at = time();
     }
 
     /**
@@ -173,38 +198,6 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
     public static function onRemoveAllAssignments(RemoveAllAssignmentsEvent $event)
     {
         self::updateAll(['role' => null]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::className(),
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
-            [['username', 'email'], 'required'],
-            ['email', 'email'],
-        ];
-    }
-
-    public function attributeLabels()
-    {
-        return [
-            'username' => 'Login',
-            'email' => 'Email',
-            'password' => 'Password',
-        ];
     }
 
     // Hybrid RBAC manager methods

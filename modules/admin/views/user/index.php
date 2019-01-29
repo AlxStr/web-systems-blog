@@ -27,10 +27,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
                     ['class' => 'yii\grid\ActionColumn',
-                        'template' => '{view} {update} {ban}',
+                        'template' => '{view} {update} {ban} {unban}',
                         'buttons' => [
                             'ban' => function ($url, $model, $key) {
-                                return Html::a('<span class="glyphicon glyphicon-minus-sign" title="Ban\Unban"></span>', $url);
+                                if ($model->status == \app\models\User::STATUS_ACTIVE)
+                                return Html::a('<span class="glyphicon glyphicon-stop" title="Ban"></span>', $url);
+                            },
+                            'unban' => function ($url, $model, $key) {
+                                if ($model->status == \app\models\User::STATUS_INACTIVE)
+                                return Html::a('<span class="glyphicon glyphicon-play" title="Unban"></span>', $url);
                             },
                         ],
                     ],
