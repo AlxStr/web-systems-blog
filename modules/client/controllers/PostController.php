@@ -21,14 +21,16 @@ class PostController extends Controller
 {
 
     private $postService;
+    private $uploadService;
 
     /**
      * PostController constructor.
      */
-    public function __construct($id, $module, PostManageService $postService, $config = [])
+    public function __construct($id, $module, PostManageService $postService, UploadService $uploadService, $config = [])
     {
         parent::__construct($id, $module, $config);
         $this->postService = $postService;
+        $this->uploadService = $uploadService;
     }
 
     public function behaviors()
@@ -91,11 +93,10 @@ class PostController extends Controller
     {
             $categories = ArrayHelper::map(Category::find()->all(), 'id', 'title');
 
-            $uploadService = Yii::$container->get(UploadService::class);
             $form = new PostForm();
             if ($form->load(Yii::$app->request->post()) && $form->validate()) {
                 try {
-                    $form->logo = $uploadService->checkUpload($form);
+                    $form->logo = $this->uploadService->checkUpload($form);
                     $post = $this->postService->create($form);
                     return $this->redirect(['view', 'id' => $post->id]);
                 } catch (\DomainException $e) {
@@ -128,11 +129,10 @@ class PostController extends Controller
         $categories = Category::find()->all();
         $categories = ArrayHelper::map($categories, 'id', 'title');
 
-        $uploadService = Yii::$container->get(UploadService::class);
         $form = new PostForm($post);
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try {
-                $form->logo = $uploadService->checkUpload($form);
+                $form->logo = $this->uploadService->checkUpload($form);
                 $this->postService->edit($post->id, $form);
                 return $this->redirect(['view', 'id' => $post->id]);
             } catch (\DomainException $e) {

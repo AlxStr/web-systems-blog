@@ -16,10 +16,5 @@ class SetUp implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        $container = \Yii::$container;
-
-        $container->setSingleton(SignupService::class);
-        $container->setSingleton(LoginService::class);
-        $container->setSingleton(UploadService::class);
     }
 }

@@ -14,6 +14,16 @@ use yii\web\Controller;
 
 class AuthController extends Controller
 {
+    private $loginService;
+    private $signupService;
+
+    public function __construct($id, $module, LoginService $loginService, SignupService $signupService,  $config = [])
+    {
+        parent::__construct($id, $module, $config);
+        $this->signupService = $signupService;
+        $this->loginService = $loginService;
+    }
+
     public function behaviors()
     {
         return [
@@ -48,11 +58,10 @@ class AuthController extends Controller
             return $this->goHome();
         }
 
-        $service = Yii::$container->get(LoginService::class);
         $form = new LoginForm();
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try{
-                $service->login($form);
+                $this->loginService->login($form);
                 return $this->goBack();
             }catch (\DomainException $e){
                 Yii::$app->session->setFlash('error', $e->getMessage());
@@ -74,11 +83,10 @@ class AuthController extends Controller
 
     public function actionSignup()
     {
-        $service = Yii::$container->get(SignupService::class);
         $form = new SignupForm();
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-            $user = $service->signup($form);
+            $user = $this->signupService->signup($form);
             if (Yii::$app->getUser()->login($user)) {
                 return $this->goHome();
             }
