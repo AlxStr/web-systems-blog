@@ -42,7 +42,8 @@ class UserEditForm extends Model
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'This email address has already been taken.'],
+            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'This email address has already been taken.',
+                'filter' => ['<>', 'id', $this->_user->id]],
             ['role', 'string', 'min' => 4]
         ];
     }

@@ -2,19 +2,33 @@
 
 namespace app\modules\client\controllers;
 
+use app\models\forms\UserEditForm;
+use app\models\repositories\UserRepository;
+use app\models\services\UserManageService;
 use app\models\User;
 use Yii;
-use yii\web\NotFoundHttpException;
 
 class ProfileController extends \yii\web\Controller
 {
 
+    private $userService;
+    private $repository;
+
+    public function __construct($id, $module, UserManageService $userService, UserRepository $repository, $config = [])
+    {
+        parent::__construct($id, $module, $config = []);
+        $this->userService = $userService;
+        $this->repository = $repository;
+    }
+
     public function actionIndex()
     {
-        $user = Yii::$app->user->identity;
+        $user_id = Yii::$app->user->getId();
+        $user = $this->repository->get($user_id);
 
-        if ($user->load(Yii::$app->request->post())){
-            $user->save();
+        $form = new UserEditForm($user);
+        if ($form->load(Yii::$app->request->post())){
+            $this->userService->edit($user_id, $form);
             Yii::$app->session->setFlash('success', 'Successfully changed');
         }
 
