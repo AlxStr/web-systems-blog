@@ -72,12 +72,6 @@ class UserController extends Controller
      */
     public function actionCreate()
     {
-//        $model = new User();
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
-
         $form = new UserCreateForm();
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
@@ -105,8 +99,6 @@ class UserController extends Controller
      */
     public function actionUpdate($id)
     {
-
-
         $user = $this->findModel($id);
 
         $form = new UserEditForm($user);
