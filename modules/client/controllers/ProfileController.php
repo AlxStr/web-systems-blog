@@ -27,11 +27,12 @@ class ProfileController extends \yii\web\Controller
         $user = $this->repository->get($user_id);
 
         $form = new UserEditForm($user);
-        if ($form->load(Yii::$app->request->post())){
-            $this->userService->edit($user_id, $form);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()){
+            $form->role = $user->role;
+            $this->userService->edit($user->id, $form);
             Yii::$app->session->setFlash('success', 'Successfully changed');
         }
 
-        return $this->render('index', compact('user'));
+        return $this->render('index', compact('form'));
     }
 }

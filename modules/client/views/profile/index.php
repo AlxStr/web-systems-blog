@@ -5,15 +5,20 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 ?>
-<?php $form = ActiveForm::begin(); ?>
-    <h3>Профіль</h3>
 
-<?= $form->field($user, 'username') ?>
+<h3>Профіль</h3>
+<div class="box">
+    <div class="box-body">
+    <?php $activeForm = ActiveForm::begin(); ?>
 
-<?= $form->field($user, 'email') ?>
+        <?= $activeForm->field($form, 'username')->textInput(['maxlength' => true]) ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Зберегти', ['class' => 'btn btn-primary']) ?>
+        <?= $activeForm->field($form, 'email')->textInput() ?>
+
+        <div class="form-group">
+            <?= Html::submitButton('Зберегти', ['class' => 'btn btn-primary']) ?>
+        </div>
+
+    <?php ActiveForm::end(); ?>
     </div>
-
-<?php ActiveForm::end(); ?>
+</div>
