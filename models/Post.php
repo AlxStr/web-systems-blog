@@ -28,7 +28,7 @@ class Post extends \yii\db\ActiveRecord
         return '{{%posts}}';
     }
 
-    public static function create($title, $categoryId, $description, $body, $logo = null, $status = Post::INACTIVE): self
+    public static function create($title, $categoryId, $description, $body, $logo = null): self
     {
         $post = new static();
         $post->title = $title;
@@ -36,9 +36,7 @@ class Post extends \yii\db\ActiveRecord
         $post->description = $description;
         $post->body = $body;
         $post->author = Yii::$app->user->identity->getId();
-        $post->status = Post::INACTIVE;
         $post->logo = $logo;
-        $post->status = $status;
         $post->created_at = time();
         $post->updated_at = time();
 

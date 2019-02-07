@@ -16,16 +16,21 @@ class PostManageService
         $this->posts = $posts;
     }
 
-    public function create(PostForm $form): Post
+    public function create(PostForm $form, $active = null): Post
     {
         $post = Post::create(
             $form->title,
             $form->category_id,
             $form->description,
             $form->body,
-            $form->logo,
-            $form->status
+            $form->logo
         );
+
+        if($active){
+            $post->status = Post::ACTIVE;
+        } else {
+            $post->status = Post::INACTIVE;
+        }
 
         $this->posts->save($post);
 

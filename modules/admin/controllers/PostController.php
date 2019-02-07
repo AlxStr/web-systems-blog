@@ -88,12 +88,10 @@ class PostController extends Controller
         $categories = ArrayHelper::map(Category::find()->all(), 'id', 'title');
 
         $form = new PostForm();
-        $form->author = Yii::$app->user->getId();
-        $form->status = Post::ACTIVE;
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try {
                 $form->logo = $this->uploadService->checkUpload($form);
-                $post = $this->postService->create($form);
+                $post = $this->postService->create($form, true);
                 return $this->redirect(['view', 'id' => $post->id]);
             } catch (\DomainException $e) {
                 Yii::$app->errorHandler->logException($e);
