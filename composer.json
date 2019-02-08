@@ -23,7 +23,8 @@
         "dmstr/yii2-adminlte-asset": "^2.1",
         "vlucas/phpdotenv": "^2.5",
         "kartik-v/yii2-widget-datepicker": "@dev",
-        "kartik-v/yii2-field-range": "*"
+        "kartik-v/yii2-field-range": "*",
+        "kartik-v/yii2-widget-fileinput": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

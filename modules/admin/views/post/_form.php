@@ -1,5 +1,6 @@
 <?php
 
+use kartik\file\FileInput;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use dosamigos\ckeditor\CKEditor;
@@ -14,7 +15,15 @@ use dosamigos\ckeditor\CKEditor;
 
     <?= $form->field($model, 'category_id')->dropDownList($categories) ?>
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'imageFile')->fileInput()?>
+    <?//= $form->field($model, 'imageFile')->fileInput()?>
+    <?= $form->field($model, 'imageFile')->widget(FileInput::class, [
+            'options' =>[
+                'options' => [
+                    'accept' => 'image/*',
+                    'multiple' => false
+                ]
+            ]
+    ])?>
     <?= $form->field($model, 'description')->textarea() ?>
 
     <?= $form->field($model, 'body')->widget(CKEditor::className(), [
