@@ -3,7 +3,9 @@
 namespace app\models\services;
 
 
-use app\models\forms\PostForm;
+use app\models\forms\PhotoForm;
+use app\models\forms\PostCreateForm;
+use app\models\forms\PostEditForm;
 use app\models\Post;
 use app\models\repositories\PostRepository;
 
@@ -16,14 +18,13 @@ class PostManageService
         $this->posts = $posts;
     }
 
-    public function create(PostForm $form, $active = null): Post
+    public function create(PostCreateForm $form, $active = null): Post
     {
         $post = Post::create(
             $form->title,
             $form->category_id,
             $form->description,
-            $form->body,
-            $form->logo
+            $form->body
         );
 
         if($active){
@@ -32,12 +33,16 @@ class PostManageService
             $post->status = Post::INACTIVE;
         }
 
+        foreach ($form->photo->file as $image){
+            $post->updatePhoto($image);
+        }
+
         $this->posts->save($post);
 
         return $post;
     }
 
-    public function edit($id, PostForm $form): void
+    public function edit($id, PostEditForm $form): void
     {
         $post = $this->posts->get($id);
 
@@ -45,10 +50,16 @@ class PostManageService
             $form->title,
             $form->category_id,
             $form->description,
-            $form->body,
-            $form->logo
+            $form->body
         );
 
+        $this->posts->save($post);
+    }
+
+    public function addPhoto($id, PhotoForm $form): void
+    {
+        $post = $this->posts->get($id);
+        $post->addPhoto($form->file);
         $this->posts->save($post);
     }
 

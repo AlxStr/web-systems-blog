@@ -2,11 +2,10 @@
 
 namespace app\modules\admin\controllers;
 
-use app\models\forms\PostForm;
+use app\models\forms\PostCreateForm;
+use app\models\forms\PostEditForm;
 use app\models\services\PostManageService;
-use app\models\services\UploadService;
 use Yii;
-use app\models\UploadFile;
 use app\models\Category;
 use app\models\Post;
 use app\models\forms\PostSearch;
@@ -14,7 +13,6 @@ use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
 
 /**
  * PostController implements the CRUD actions for Post model.
@@ -22,13 +20,11 @@ use yii\web\UploadedFile;
 class PostController extends Controller
 {
     private $postService;
-    private $uploadService;
 
-    public function __construct($id, $module, PostManageService $postService, UploadService $uploadService,  $config = [])
+    public function __construct($id, $module, PostManageService $postService,  $config = [])
     {
         parent::__construct($id, $module, $config);
         $this->postService = $postService;
-        $this->uploadService = $uploadService;
     }
 
     public function behaviors()
@@ -87,10 +83,9 @@ class PostController extends Controller
     {
         $categories = ArrayHelper::map(Category::find()->all(), 'id', 'title');
 
-        $form = new PostForm();
+        $form = new PostCreateForm();
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try {
-                $form->logo = $this->uploadService->checkUpload($form);
                 $post = $this->postService->create($form, true);
                 return $this->redirect(['view', 'id' => $post->id]);
             } catch (\DomainException $e) {
@@ -118,10 +113,9 @@ class PostController extends Controller
         $categories = Category::find()->all();
         $categories = ArrayHelper::map($categories, 'id', 'title');
 
-        $form = new PostForm($post);
+        $form = new PostEditForm($post);
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try {
-                $form->logo = $this->uploadService->checkUpload($form);
                 $this->postService->edit($post->id, $form);
                 return $this->redirect(['view', 'id' => $post->id]);
             } catch (\DomainException $e) {
