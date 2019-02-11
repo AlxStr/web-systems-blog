@@ -32,7 +32,7 @@ class PostSearch extends Model
 
     public function search($params)
     {
-        $query = Post::find();
+        $query = Post::find()->with('photo');
 
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
