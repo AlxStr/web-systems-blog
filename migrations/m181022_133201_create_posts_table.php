@@ -16,7 +16,6 @@ class m181022_133201_create_posts_table extends Migration
             'id' => $this->primaryKey(),
             'category_id' => $this->integer(),
             'author' => $this->integer(),
-            'logo' => $this->string(),
             'title' => $this->string(),
             'description' => $this->text(),
             'body' => $this->text(),
