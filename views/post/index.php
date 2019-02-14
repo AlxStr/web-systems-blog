@@ -17,8 +17,9 @@ use yii\widgets\LinkPager;
                 <div class="media">
                     <a class="pull-left" href="<?= Url::toRoute(['post/view', 'id' => $post->id])?>">
 
-                        <?php if (is_null($post->logo) || empty($post->logo)): ?>
-                            <?= Html::img('@web/images/no-image.png', ['class' => 'media-object']) ?>
+                        <?php if (is_null($post->photo->getImageFileUrl('file', 'thumb')) ||
+                            empty($post->photo->getImageFileUrl('file', 'thumb'))): ?>
+                            <?= Html::img($post->photo->getImageFileUrl('file', 'thumb'), ['class' => 'media-object']) ?>
                         <?php else: ?>
                             <?= Html::img('@web/images/' . $post->logo, ['class' => 'media-object', 'width' => '150px', 'height' => '150px']) ?>
                         <?php endif; ?>

@@ -1,6 +1,8 @@
 <?php
 
+use kartik\file\FileInput;
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -44,5 +46,43 @@ $this->params['breadcrumbs'][] = $this->title;
             'body:ntext',
         ],
     ]) ?>
+
+
+    <div class="box" id="photo">
+        <div class="box-header with-border">Photo</div>
+        <div class="box-body">
+
+            <?php if ($model->photo): ?>
+                <?= Html::a('<span class="glyphicon glyphicon-remove"></span>', ['delete-photo', 'id' => $model->id, 'photo_id' => $model->photo->id], [
+                    'class' => 'btn btn-default',
+                    'data-method' => 'post',
+                    'data-confirm' => 'Remove photo?',
+                ]); ?>
+                <div>
+                    <?= Html::a(
+                        Html::img($model->photo->getThumbFileUrl('file', 'thumb')),
+                        $model->photo->getUploadedFileUrl('file'),
+                        ['class' => 'thumbnail', 'target' => '_blank']
+                    ) ?>
+                </div>
+            <?php else: ?>
+                <?php $form = ActiveForm::begin([
+                    'options' => ['enctype'=>'multipart/form-data'],
+                ]); ?>
+                <?= $form->field($photoForm, 'file[]')->label(false)->widget(FileInput::class, [
+                    'options' => [
+                        'accept' => 'image/*',
+                        'multiple' => false,
+                    ]
+                ]) ?>
+                <div class="form-group">
+                    <?= Html::submitButton('Upload', ['class' => 'btn btn-success']) ?>
+                </div>
+                <?php ActiveForm::end(); ?>
+
+            <?php endif; ?>
+        </div>
+    </div>
+
 
 </div>

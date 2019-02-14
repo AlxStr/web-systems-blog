@@ -2,9 +2,6 @@
 
 namespace app\bootstrap;
 
-use app\models\services\LoginService;
-use app\models\services\SignupService;
-use app\models\services\UploadService;
 use yii\base\Application;
 use yii\base\BootstrapInterface;
 

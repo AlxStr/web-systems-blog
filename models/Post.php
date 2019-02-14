@@ -78,7 +78,17 @@ class Post extends \yii\db\ActiveRecord
 
     public function updatePhoto(UploadedFile $photo): void
     {
-        $this->photo = Photo::create($photo);;
+        $this->photo = Photo::create($photo);
+    }
+
+    public function removePhoto($id): void
+    {
+        $photo = $this->photo;
+        if ($photo->isIdEqualTo($id)) {
+            $this->photo->delete();
+            return;
+        }
+        throw new \DomainException('Photo is not found.');
     }
 
 

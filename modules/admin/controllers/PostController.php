@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\forms\PhotoForm;
 use app\models\forms\PostCreateForm;
 use app\models\forms\PostEditForm;
 use app\models\services\PostManageService;
@@ -66,11 +67,25 @@ class PostController extends Controller
      */
     public function actionView($id)
     {
-        $model = $this->findModel($id);
-        $title_cat = Category::getTitle($model->category_id);
+        $post = $this->findModel($id);
+        $title_cat = Category::getTitle($post->category_id);
+
+        $photoForm = new PhotoForm();
+        if ($photoForm->load(Yii::$app->request->post()) && $photoForm->validate()) {
+            try {
+                $this->postService->addPhoto($post->id, $photoForm);
+                return $this->redirect(['view', 'id' => $post->id]);
+            } catch (\DomainException $e) {
+                Yii::$app->errorHandler->logException($e);
+                Yii::$app->session->setFlash('error', $e->getMessage());
+            }
+        }
+
+
         return $this->render('view', [
-            'model' => $model,
+            'model' => $post,
             'title_cat' => $title_cat,
+            'photoForm' => $photoForm
         ]);
     }
 
@@ -165,5 +180,21 @@ class PostController extends Controller
         $this->postService->activate($id);
 
         return $this->redirect(['index']);
+    }
+
+
+    /**
+     * @param integer $id
+     * @param $photo_id
+     * @return mixed
+     */
+    public function actionDeletePhoto($id, $photo_id)
+    {
+        try {
+            $this->postService->removePhoto($id, $photo_id);
+        } catch (\DomainException $e) {
+            Yii::$app->session->setFlash('error', $e->getMessage());
+        }
+        return $this->redirect(['view', 'id' => $id, '#' => 'photos']);
     }
 }

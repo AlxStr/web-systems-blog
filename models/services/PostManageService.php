@@ -59,7 +59,15 @@ class PostManageService
     public function addPhoto($id, PhotoForm $form): void
     {
         $post = $this->posts->get($id);
-        $post->addPhoto($form->file);
+
+        $post->updatePhoto($form->file[0]);
+        $this->posts->save($post);
+    }
+
+    public function removePhoto($id, $photoId): void
+    {
+        $post = $this->posts->get($id);
+        $post->removePhoto($photoId);
         $this->posts->save($post);
     }
 

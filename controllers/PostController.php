@@ -26,6 +26,8 @@ class PostController extends Controller
         $pages = $dataProvider->getPagination();
         $models = $dataProvider->getModels();
 
+        echo '<pre>';print_r($models);die;
+
         return $this->render('index', [
             'posts' => $models,
             'pages' => $pages,

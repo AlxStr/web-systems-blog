@@ -25,10 +25,10 @@ class Photo extends ActiveRecord
                     'admin' => ['width' => 100, 'height' => 70],
                     'thumb' => ['width' => 150, 'height' => 150],
                 ],
-                'filePath' => '@upload/[[attribute_post_id]]/[[pk]].[[extension]]',
-                'fileUrl' => '@upload/[[attribute_post_id]]/[[pk]].[[extension]]',
-                'thumbPath' => '@upload/cache/[[attribute_post_id]]/[[profile]]_[[pk]].[[extension]]',
-                'thumbUrl' => '@upload/cache/[[attribute_post_id]]/[[profile]]_[[pk]].[[extension]]',
+                'filePath' => '@uploadPath/[[attribute_post_id]]/[[pk]].[[extension]]',
+                'fileUrl' => '@uploadUrl/[[attribute_post_id]]/[[pk]].[[extension]]',
+                'thumbPath' => '@uploadPath/cache/[[attribute_post_id]]/[[profile]]_[[pk]].[[extension]]',
+                'thumbUrl' => '@uploadUrl/cache/[[attribute_post_id]]/[[profile]]_[[pk]].[[extension]]',
             ],
         ];
     }

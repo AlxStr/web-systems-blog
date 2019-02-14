@@ -1,5 +1,6 @@
 <?php
 
+use kartik\file\FileInput;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use dosamigos\ckeditor\CKEditor;
@@ -13,29 +14,49 @@ use dosamigos\ckeditor\CKEditor;
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
 
-    <?= $form->field($model, 'category_id')->dropDownList($categories) ?>
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'imageFile')->widget(FileInput::class, [
-        'options' =>[
-            'options' => [
-                'accept' => 'image/*',
-                'multiple' => false
-            ]
-        ]
-    ])?>
-    <?= $form->field($model, 'description')->textarea() ?>
+    <div class="box box-default">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+                </div>
+                <div class="col-md-4">
+                    <?= $form->field($model, 'category_id')->dropDownList($categories) ?>
+                </div>
 
-    <?= $form->field($model, 'body')->widget(CKEditor::className(), [
-        'options' => ['rows' => 6],
-        'preset' => 'custom',
-        'clientOptions' => [
-            'toolbarGroups' => [
-                ['name' => 'undo'],
-                ['name' => 'insert', 'groups' => ['insert']],
-            ],
-            'removeButtons' => 'Flash,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe',
-        ],
-    ]) ?>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <?= $form->field($model, 'description')->textarea(['rows' => 15]) ?>
+                </div>
+                <div class="col-md-6">
+                    <?= $form->field($model, 'imageFile')->widget(FileInput::class, [
+                        'options' =>[
+                            'options' => [
+                                'accept' => 'image/*',
+                                'multiple' => false
+                            ]
+                        ]
+                    ])?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $form->field($model, 'body')->widget(CKEditor::className(), [
+                        'options' => ['rows' => 6],
+                        'preset' => 'custom',
+                        'clientOptions' => [
+                            'toolbarGroups' => [
+                                ['name' => 'undo'],
+                                ['name' => 'insert', 'groups' => ['insert']],
+                            ],
+                        ],
+                    ]) ?>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
