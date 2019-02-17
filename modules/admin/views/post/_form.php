@@ -1,5 +1,6 @@
 <?php
 
+use app\models\helpers\CategoryHelper;
 use kartik\file\FileInput;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -13,17 +14,18 @@ use dosamigos\ckeditor\CKEditor;
 
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
-    <?= $form->field($model, 'category_id')->dropDownList($categories) ?>
+    <?= $form->field($model, 'category_id')->dropDownList((new CategoryHelper())->getCategoriesList()) ?>
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-    <?//= $form->field($model, 'imageFile')->fileInput()?>
+
     <?= $form->field($model, 'imageFile')->widget(FileInput::class, [
             'options' =>[
                 'options' => [
                     'accept' => 'image/*',
-                    'multiple' => false
-                ]
-            ]
+                    'multiple' => false,
+                ],
+            ],
     ])?>
+
     <?= $form->field($model, 'description')->textarea() ?>
 
     <?= $form->field($model, 'body')->widget(CKEditor::className(), [

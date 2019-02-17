@@ -2,7 +2,6 @@
 
 namespace app\models\repositories;
 
-
 use app\models\Category;
 use yii\web\NotFoundHttpException;
 
@@ -22,11 +21,11 @@ class CategoryRepository
         }
     }
 
-    public function getAllPosts()
+    public function getAllCategories()
     {
         return Category::find()->all();
     }
-    public function getAllPostsWhere($query)
+    public function getAllCategoriesWhere($query)
     {
         return Category::findAll($query);
     }

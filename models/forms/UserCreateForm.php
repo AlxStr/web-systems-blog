@@ -2,7 +2,6 @@
 
 namespace app\models\forms;
 
-use app\models\User;
 use yii\base\Model;
 
 class UserCreateForm extends Model
@@ -11,7 +10,6 @@ class UserCreateForm extends Model
     public $email;
     public $password;
     public $role;
-
 
     public function rules()
     {

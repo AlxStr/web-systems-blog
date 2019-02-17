@@ -28,7 +28,7 @@ class PostForm extends Model
             [['title', 'body'], 'required'],
             [['description'], 'required'],
             [['title', 'logo'], 'string', 'max' => 255],
-            [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
+            [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
         ];
     }
@@ -36,14 +36,14 @@ class PostForm extends Model
     public function attributeLabels()
     {
         return [
-            'id' => 'ИД',
-            'category_id' => 'Категория',
-            'logo' => 'Логотип',
-            'status' => 'Статус',
-            'title' => 'Заголовок',
-            'description' => 'Описание',
-            'body' => 'Текст',
-            'author' => 'Автор'
+            'id' => 'id',
+            'category_id' => 'Category',
+            'logo' => 'Photo\Logotype',
+            'status' => 'Status',
+            'title' => 'Title',
+            'description' => 'Description',
+            'body' => 'Content',
+            'author' => 'Author'
         ];
     }
 }

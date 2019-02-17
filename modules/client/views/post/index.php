@@ -1,5 +1,8 @@
 <?php
 
+use app\models\helpers\CategoryHelper;
+use app\models\helpers\PostHelper;
+use app\models\Post;
 use kartik\date\DatePicker;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -15,7 +18,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="post-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
         <?= Html::a('Create Post', ['create'], ['class' => 'btn btn-success']) ?>
@@ -33,14 +35,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     'title',
                     [
                         'attribute' => 'status',
-                        'value' => 'statusName',
-                        'filter' => app\models\Post::getStatusList(),
+                        'filter' => PostHelper::statusList(),
+                        'value' => function (Post $model) {
+                            return PostHelper::statusLabel($model->status);
+                        },
+                        'format' => 'raw',
                     ],
 
                     [
                         'attribute' => 'category_id',
                         'value' => 'category.title',
-                        'filter' => $categories,
+                        'filter' => (new CategoryHelper())->getCategoriesList(),
                     ],
 
                     [

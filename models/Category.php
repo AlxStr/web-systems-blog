@@ -2,16 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
-/**
- * This is the model class for table "categories".
- *
- * @property int $id
- * @property string $title
- *
- * @property Posts[] $posts
- */
 class Category extends \yii\db\ActiveRecord
 {
     public static function tableName()
@@ -31,12 +21,9 @@ class Category extends \yii\db\ActiveRecord
         $this->title = $title;
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getPosts()
     {
-        return $this->hasMany(Post::className(), ['category_id' => 'id']);
+        return $this->hasMany(Post::class, ['category_id' => 'id']);
     }
 
     public static function getTitle($id)

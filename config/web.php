@@ -15,7 +15,7 @@ $config = [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
-        '@upload' => '@app/web/'.getenv('UPLOAD_IMAGES_FOLDER').'/',
+        '@upload' => sprintf('@app/web/%s/', getenv('UPLOAD_IMAGES_FOLDER')),
     ],
     'components' => [
         'request' => [
@@ -60,11 +60,10 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '' => 'post/index',
                 'post/<id:\d+>' => 'post/view',
-                'post/' => 'post/index',
                 '<action:(login|logout|signup)>'=>'auth/<action>',
-                'client/post/<action:(view|update|delete)>/<id:\d+>' => 'client/post/<action>',
-                'client/post/<action:\w+>' => 'client/post/<action>',
+                '<module:(client|admin)>/<controller:(post)>/<action:(view|update|delete)>/<id:\d+>' => '<module>/<controller>/<action>'
             ],
         ],
     ],
@@ -90,6 +89,7 @@ if (YII_ENV_DEV) {
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['127.0.0.1', '::1', '192.168.83.*'],
     ];
 
     $config['bootstrap'][] = 'gii';

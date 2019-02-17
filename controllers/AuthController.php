@@ -57,7 +57,6 @@ class AuthController extends Controller
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-
         $form = new LoginForm();
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try{
@@ -67,7 +66,6 @@ class AuthController extends Controller
                 Yii::$app->session->setFlash('error', $e->getMessage());
             }
         }
-
         $form->password = '';
         return $this->render('login', [
             'model' => $form,
@@ -77,14 +75,12 @@ class AuthController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
         return $this->goHome();
     }
 
     public function actionSignup()
     {
         $form = new SignupForm();
-
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             $user = $this->signupService->signup($form);
             if (Yii::$app->getUser()->login($user)) {

@@ -22,6 +22,7 @@ use elisdn\hybrid\AuthRoleModelInterface;
  * @property string $password_reset_token
  * @property string $email
  * @property string $auth_key
+ * @property string $role
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
@@ -100,25 +101,17 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
-    /**
-     * @inheritdoc
-     */
+
     public function getId()
     {
         return $this->getPrimaryKey();
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function findIdentity($id)
     {
         return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function findIdentityByAccessToken($token, $type = null)
     {
         throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
@@ -200,51 +193,32 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
         self::updateAll(['role' => null]);
     }
 
-    // Hybrid RBAC manager methods
-
     public function isActive(): bool
     {
         return $this->status === self::STATUS_ACTIVE;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function validateAuthKey($authKey)
     {
         return $this->getAuthKey() === $authKey;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getAuthKey()
     {
         return $this->auth_key;
     }
 
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return boolean if password provided is valid for current user
-     */
     public function validatePassword($password)
     {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
-    /**
-     * Generates new password reset token
-     */
+
     public function generatePasswordResetToken()
     {
         $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
-    /**
-     * Removes password reset token
-     */
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
@@ -268,14 +242,5 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
     public function clearAuthRoleNames()
     {
         $this->updateAttributes(['role' => $this->role = null]);
-    }
-
-    public function getStatusName(){
-        $list = self::getStatusList();
-        return $list[$this->status];
-    }
-
-    public static function getStatusList(){
-        return ['0' => 'Banned', '10' => 'Ok'];
     }
 }

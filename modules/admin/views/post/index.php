@@ -1,5 +1,7 @@
 <?php
 
+use app\models\helpers\CategoryHelper;
+use app\models\helpers\PostHelper;
 use app\models\Post;
 use kartik\date\DatePicker;
 use yii\helpers\Html;
@@ -17,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
     <p>
-        <?= Html::a('Создать пост', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Post', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
 
@@ -40,14 +42,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     'title',
                     [
                         'attribute' => 'status',
-                        'value' => 'statusName',
-                        'filter' => app\models\Post::getStatusList(),
+                        'filter' => PostHelper::statusList(),
+                        'value' => function (Post $model) {
+                            return PostHelper::statusLabel($model->status);
+                        },
+                        'format' => 'raw',
                     ],
 
                     [
                         'attribute' => 'category_id',
                         'value' => 'category.title',
-                        'filter' => $categories,
+                        'filter' => (new CategoryHelper())->getCategoriesList(),
                     ],
                     'logo',
                     [

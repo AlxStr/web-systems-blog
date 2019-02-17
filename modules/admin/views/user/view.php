@@ -1,5 +1,7 @@
 <?php
 
+use app\models\helpers\UserHelper;
+use app\models\User;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -31,16 +33,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'username',
             'role',
-            'auth_key',
-            'password_hash',
-            'password_reset_token',
             'email:email',
             [
                 'attribute' => 'status',
-                'value' =>  $model->getStatusName(),
+                'filter' => UserHelper::statusList(),
+                'value' => function (User $model) {
+                    return UserHelper::statusLabel($model->status);
+                },
+                'format' => 'raw',
             ],
             'created_at:datetime',
-            'updated_at:datetime',
         ],
     ]) ?>
 

@@ -14,13 +14,6 @@ class UserEditForm extends Model
 
     private $_user;
 
-    /**
-     * CreateUserForm constructor.
-     * @param $username
-     * @param $email
-     * @param $password
-     * @param $role
-     */
     public function __construct(User $user, $config = [])
     {
         parent::__construct($config);

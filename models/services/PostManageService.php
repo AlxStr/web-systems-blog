@@ -2,7 +2,6 @@
 
 namespace app\models\services;
 
-
 use app\models\forms\PostForm;
 use app\models\Post;
 use app\models\repositories\PostRepository;
@@ -22,16 +21,14 @@ class PostManageService
             $form->title,
             $form->category_id,
             $form->description,
-            $form->body,
-            $form->logo
+            $form->body
         );
-
+        $post->loadPhoto($form);
         if($active){
             $post->status = Post::ACTIVE;
         } else {
             $post->status = Post::INACTIVE;
         }
-
         $this->posts->save($post);
 
         return $post;
@@ -45,11 +42,17 @@ class PostManageService
             $form->title,
             $form->category_id,
             $form->description,
-            $form->body,
-            $form->logo
+            $form->body
         );
 
+        $post->loadPhoto($form);
         $this->posts->save($post);
+    }
+
+    public function remove($id): void
+    {
+        $post = $this->posts->get($id);
+        $this->posts->remove($post);
     }
 
     public function activate($id): void
@@ -59,9 +62,4 @@ class PostManageService
         $this->posts->save($post);
     }
 
-    public function remove($id): void
-    {
-        $post = $this->posts->get($id);
-        $this->posts->remove($post);
-    }
 }

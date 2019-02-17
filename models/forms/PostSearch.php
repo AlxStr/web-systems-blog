@@ -6,9 +6,7 @@ use app\models\Post;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
-/**
- * PostSearch represents the model behind the search form of `app\models\Post`.
- */
+
 class PostSearch extends Model
 {
     public $id;
@@ -20,7 +18,6 @@ class PostSearch extends Model
     public $date_create;
     public $date_update;
 
-
     public function rules()
     {
         return [
@@ -30,15 +27,15 @@ class PostSearch extends Model
         ];
     }
 
-    public function search($params)
+    public function search($params, $pagination = 20)
     {
-        $query = Post::find();
+        $query = Post::find()->with('category', 'postAuthor');
 
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 20,
+                'pageSize' => $pagination,
             ],
             'sort' => [
                 'defaultOrder' => [

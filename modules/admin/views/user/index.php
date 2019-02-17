@@ -1,5 +1,7 @@
 <?php
 
+use app\models\helpers\UserHelper;
+use app\models\User;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use kartik\date\DatePicker;
@@ -46,8 +48,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     'email:email',
                     [
                         'attribute' => 'status',
-                        'filter' => app\models\User::getStatusList(),
-                        'value' => 'statusName',
+                        'filter' => UserHelper::statusList(),
+                        'value' => function (User $model) {
+                            return UserHelper::statusLabel($model->status);
+                        },
+                        'format' => 'raw',
                     ],
                     [
                         'attribute' => 'created_at',
