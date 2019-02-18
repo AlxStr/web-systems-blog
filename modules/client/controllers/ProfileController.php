@@ -5,7 +5,6 @@ namespace app\modules\client\controllers;
 use app\models\forms\UserEditForm;
 use app\models\repositories\UserRepository;
 use app\models\services\UserManageService;
-use app\models\User;
 use Yii;
 
 class ProfileController extends \yii\web\Controller

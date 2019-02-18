@@ -37,9 +37,7 @@ class PostController extends Controller
     public function actionIndex()
     {
         $searchModel = new PostSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        // The user receives only his entries
-        $dataProvider->query->andFilterWhere(['author'=>Yii::$app->user->id]);
+        $dataProvider = $searchModel->search(['author' => Yii::$app->user->id]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -75,10 +73,6 @@ class PostController extends Controller
     public function actionUpdate($id)
     {
         $post = $this->postRepository->get($id);
-
-        if (!Yii::$app->user->can('updateOwnPost', ['post' => $post])){
-            throw new \yii\web\HttpException(403, 'You don\'t have permission to access');
-        }
         $form = new PostForm($post);
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try {
@@ -89,7 +83,6 @@ class PostController extends Controller
                 Yii::$app->session->setFlash('error', $e->getMessage());
             }
         }
-
         return $this->render('update', [
             'model' => $form,
 
@@ -98,10 +91,7 @@ class PostController extends Controller
 
     public function actionDelete($id)
     {
-        if (Yii::$app->user->can('updateOwnPost', ['post' => $model = $this->postRepository->get($id)])) {
-            $this->postService->remove($id);
-            return $this->redirect(['index']);
-        }
-        throw new \yii\web\HttpException(403, 'You don\'t have permission to access');
+        $this->postService->remove($id);
+        return $this->redirect(['index']);
     }
 }

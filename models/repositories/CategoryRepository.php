@@ -25,10 +25,6 @@ class CategoryRepository
     {
         return Category::find()->all();
     }
-    public function getAllCategoriesWhere($query)
-    {
-        return Category::findAll($query);
-    }
 
     public function get($id)
     {

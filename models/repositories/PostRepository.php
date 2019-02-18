@@ -22,24 +22,6 @@ class PostRepository
         }
     }
 
-    public function getAllPosts()
-    {
-        return Post::find()->all();
-    }
-    public function getAllPostsWhere($query)
-    {
-        return Post::findAll($query);
-    }
-
-    public function getAllActivePosts()
-    {
-        return $this->getAllPostsWhere(['status' => Post::ACTIVE]);
-    }
-    public function getAllInactivePosts()
-    {
-        return $this->getAllPostsWhere(['status' => Post::INACTIVE]);
-    }
-
     public function get($id)
     {
         if (($model = Post::findOne($id)) !== null) {

@@ -33,17 +33,15 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
     const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 10;
 
-
     public static function tableName()
     {
         return '{{%user}}';
     }
 
-
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
     }
 
@@ -54,12 +52,9 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
         $user->email = $email;
         $user->setPassword($password);
         $user->generateAuthKey();
-
         $user->save();
-        // set role (RBAC)
         $authManager = Yii::$app->authManager;
         $role = $authManager->getRole('author');
-
         $authManager->assign($role, $user->getId());
         return $user;
     }
@@ -83,19 +78,11 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
         $this->updated_at = time();
     }
 
-    /**
-     * Generates password hash from password and sets it to the model
-     *
-     * @param string $password
-     */
     public function setPassword($password)
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
-    /**
-     * Generates "remember me" authentication key
-     */
     public function generateAuthKey()
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
@@ -117,23 +104,11 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
         throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
     }
 
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
 
-    /**
-     * Finds user by password reset token
-     *
-     * @param string $token password reset token
-     * @return static|null
-     */
     public static function findByPasswordResetToken($token)
     {
         if (!static::isPasswordResetTokenValid($token)) {
@@ -146,12 +121,6 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
         ]);
     }
 
-    /**
-     * Finds out if password reset token is valid
-     *
-     * @param string $token password reset token
-     * @return boolean
-     */
     public static function isPasswordResetTokenValid($token)
     {
         if (empty($token)) {

@@ -31,7 +31,6 @@ class PostSearch extends Model
     {
         $query = Post::find()->with('category', 'postAuthor');
 
-        // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -44,9 +43,13 @@ class PostSearch extends Model
             ],
         ]);
 
-        if(isset($params['only_active']) && $params['only_active'])
+        if(isset($params['activeOnly']) && $params['activeOnly'])
         {
             $dataProvider->query->andFilterWhere(['status'=> Post::ACTIVE]);
+        }
+        if(isset($params['author']) && $params['author'])
+        {
+            $dataProvider->query->andFilterWhere(['author'=> $params['author']]);
         }
 
         $this->load($params);

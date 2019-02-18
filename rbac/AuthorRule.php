@@ -18,6 +18,7 @@ class AuthorRule extends Rule
      */
     public function execute($user, $item, $params)
     {
-        return isset($params['post']) ? $params['post']->author == $user : false;
+        $user = \Yii::$app->user->identity;
+        return isset($params['post']) ? $params['post']->author == $user->id : false;
     }
 }

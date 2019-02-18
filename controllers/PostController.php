@@ -19,7 +19,7 @@ class PostController extends Controller
     public function actionIndex()
     {
         $searchModel = new PostSearch();
-        $dataProvider = $searchModel->search(['only_active' => true], 5);
+        $dataProvider = $searchModel->search(['activeOnly' => true], 5);
         $pages = $dataProvider->getPagination();
         $models = $dataProvider->getModels();
 
