@@ -19,6 +19,7 @@ class UserEditForm extends Model
         parent::__construct($config);
         $this->username = $user->username;
         $this->email = $user->email;
+        $this->role = $user->role;
         $this->_user = $user;
     }
 
@@ -37,7 +38,7 @@ class UserEditForm extends Model
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'This email address has already been taken.',
                 'filter' => ['<>', 'id', $this->_user->id]],
-            ['role', 'string', 'min' => 4]
+            ['role', 'string', 'min' => 4, 'max' => 16]
         ];
     }
 
