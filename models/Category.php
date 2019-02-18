@@ -20,15 +20,4 @@ class Category extends \yii\db\ActiveRecord
     {
         $this->title = $title;
     }
-
-    public function getPosts()
-    {
-        return $this->hasMany(Post::class, ['category_id' => 'id']);
-    }
-
-    public static function getTitle($id)
-    {
-        $title = Category::find()->where(['id' => $id])->one();
-        return $title;
-    }
 }
