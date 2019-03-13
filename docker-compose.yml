@@ -1,9 +1,23 @@
 version: '2'
 services:
   php:
-    image: yiisoftware/yii2-php:7.1-apache
+    image: yiisoftware/yii2-php:7.2-apache
     volumes:
       - ~/.composer-docker/cache:/root/.composer/cache:delegated
       - ./:/app:delegated
+    links:
+      - mysql
     ports:
       - '8000:80'
+
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - ./storage/docker/mysql:/var/lib/mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=secret"
+      - "MYSQL_USER=alex"
+      - "MYSQL_USER_PASSWORD=secret"
+      - "MYSQL_DATABASE=homestead"
+    ports:
+      - "33061:3306"
