@@ -57,7 +57,7 @@ class ProfileController extends Controller
             $this->userService->edit($user->id, $form);
             return $this->serializeUser($this->userRepository->get($id));
         }elseif($form->hasErrors()){
-            return $form->errors;
+            return $form;
         }
         throw new ServerErrorHttpException('Failed to update the user for unknown reason.');
     }
