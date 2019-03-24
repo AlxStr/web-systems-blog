@@ -41,4 +41,28 @@ class ProfileCest
         $I->sendGET('/profile');
         $I->seeResponseCodeIs(401);
     }
+
+    public function update(ApiTester $I){
+        $I->amBearerAuthenticated('author-token-correct');
+        $I->sendPUT('/profile', [
+            'email' => 'newemail@email.com',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'email' => 'newemail@email.com'
+        ]);
+    }
+
+    public function updateValidationFailed(ApiTester $I){
+        $I->amBearerAuthenticated('author-token-correct');
+        $I->sendPUT('/profile', [
+            'username' => '',
+            'email' => 'email',
+        ]);
+        $I->seeResponseCodeIs(422);
+        $I->seeResponseContainsJson([
+            ['field' => 'email'],
+            ['field' => 'username']
+        ]);
+    }
 }
