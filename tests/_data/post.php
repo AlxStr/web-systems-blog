@@ -1,0 +1,36 @@
+<?php
+return [
+    [
+        'id' => 1,
+        'author' => 1,
+        'category_id' => 1,
+        'title' => 'First Post',
+        'description' => 'First Post',
+        'body' => 'First Post',
+        'status' => 0,
+        'created_at' => '1392559490',
+        'updated_at' => '1392559490',
+    ],
+    [
+        'id' => 2,
+        'author' => 1,
+        'category_id' => 2,
+        'title' => 'Second Post',
+        'description' => 'Second Post',
+        'body' => 'Second Post',
+        'status' => 0,
+        'created_at' => '1392559490',
+        'updated_at' => '1392559490',
+    ],
+    [
+        'id' => 3,
+        'author' => 2,
+        'category_id' => 3,
+        'title' => 'Third Post',
+        'description' => 'Third Post',
+        'body' => 'Third Post',
+        'status' => 1,
+        'created_at' => '1392559490',
+        'updated_at' => '1392559490',
+    ],
+];
