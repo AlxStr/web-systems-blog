@@ -23,7 +23,7 @@ class UserManageService
             $form->username,
             $form->email,
             $form->password,
-            $form->role
+            $form->role ? $form->role:'author'
         );
         $this->repository->save($user);
 
