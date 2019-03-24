@@ -45,6 +45,25 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
         ];
     }
 
+    public function fields()
+    {
+        $fields = parent::fields();
+        $fields['created_at'] = function (){
+            return date('Y-m-d',  $this->created_at);
+        };
+        unset($fields['auth_key'], $fields['password_hash'], $fields['password_reset_token'], $fields['updated_at']);
+        return $fields;
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return static::find()
+            ->joinWith('tokens t')
+            ->andWhere(['t.token' => $token])
+            ->andWhere(['>', 't.expired_at', time()])
+            ->one();
+    }
+
     public static function signup(string $username, string $email, string $password)
     {
         $user = new User();
@@ -97,11 +116,6 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
     public static function findIdentity($id)
     {
         return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
-    }
-
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
     }
 
     public static function findByUsername($username)
@@ -196,6 +210,11 @@ class User extends ActiveRecord implements IdentityInterface, AuthRoleModelInter
     public function getAuthRoleNames()
     {
         return (array)$this->role;
+    }
+
+    public function getTokens()
+    {
+        return $this->hasMany(Token::className(), ['user_id' => 'id']);
     }
 
     public function addAuthRoleName($roleName)
