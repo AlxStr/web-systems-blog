@@ -29,6 +29,36 @@ class Post extends \yii\db\ActiveRecord
         return '{{%posts}}';
     }
 
+    public function fields() {
+        return [
+            'id',
+            'title',
+            'category' => function(){
+                return [
+                    'id' => $this->category->id,
+                    'name' => $this->category->title,
+                ];
+            },
+            'logo' => function(){
+                return $this->logo ? $this->getPhotoUrl():null;
+            },
+            'status' => function(){
+                return [
+                    'code' => $this->status,
+                    'active' => boolval($this->status)
+                ];
+            },
+            'author' => function(){
+                return [
+                    'id' => $this->author,
+                    'username' => $this->postAuthor->username,
+                ];
+            },
+            'description',
+            'body',
+        ];
+    }
+
     public static function create($title, $categoryId, $description, $body): self
     {
         $post = new static();
