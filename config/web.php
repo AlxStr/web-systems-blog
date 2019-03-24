@@ -22,6 +22,9 @@ $config = [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'PgHstGPH6xENmHQJ494Vic7gdk1yJooF',
 			'baseUrl' => '',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -63,7 +66,33 @@ $config = [
                 '' => 'post/index',
                 'post/<id:\d+>' => 'post/view',
                 '<action:(login|logout|signup)>'=>'auth/<action>',
-                '<module:(client|admin)>/<controller:(post)>/<action:(view|update|delete)>/<id:\d+>' => '<module>/<controller>/<action>'
+                '<module:(client|admin)>/<controller:(post)>/<action:(view|update|delete)>/<id:\d+>' => '<module>/<controller>/<action>',
+
+                ['class' => 'yii\rest\UrlRule', 'prefix' => 'api', 'controller' => ['v1/category']],
+                ['class' => 'yii\rest\UrlRule',
+                    'prefix' => 'api',
+                    'controller' => ['v1/user'],
+                    'tokens' => [
+                        '{id}' => '<id:\d+>',
+                    ],
+                    'extraPatterns' => [
+                        'GET {id}/ban' => 'ban',
+                        'GET {id}/unban' => 'unban',
+                    ]
+                ],
+                ['class' => 'yii\rest\UrlRule',
+                    'prefix' => 'api',
+                    'controller' => ['v1/post'],
+                    'tokens' => [
+                        '{id}' => '<id:\d+>',
+                    ],
+                    'extraPatterns' => [
+                        'GET {id}/activate' => 'activate',
+                    ]
+                ],
+                'api/v1/auth' => 'v1/auth/index',
+                'GET api/v1/profile' => 'v1/profile/index',
+                'PUT api/v1/profile' => 'v1/profile/update',
             ],
         ],
     ],
@@ -74,6 +103,9 @@ $config = [
         ],
         'client' => [
             'class' => 'app\modules\client\Module',
+        ],
+        'v1' => [
+            'class' => 'app\modules\v1\Module',
         ],
         'debug' => [
             'class' => 'yii\debug\Module',
@@ -91,13 +123,14 @@ if (YII_ENV_DEV) {
         //'allowedIPs' => ['127.0.0.1', '::1'],
 
         // for vagrant
-        'allowedIPs' => ['127.0.0.1', '::1', '192.168.83.*'],
+        'allowedIPs' => ['127.0.0.1', '::1', '172.19.0.1'],
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
+        'allowedIPs' => ['127.0.0.1', '::1', '172.19.0.1'],
     ];
 }
 
