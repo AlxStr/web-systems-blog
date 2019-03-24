@@ -25,7 +25,7 @@ class UsersCest
 
     public function index(ApiTester $I)
     {
-        $I->amBearerAuthenticated('token-correct');
+        $I->amBearerAuthenticated('admin-token-correct');
         $I->sendGET('/users');
         $I->seeResponseCodeIs(200);
     }
@@ -38,7 +38,7 @@ class UsersCest
     }
 
     public function create(ApiTester $I){
-        $I->amBearerAuthenticated('token-correct');
+        $I->amBearerAuthenticated('admin-token-correct');
         $I->sendPOST('/users', [
             'username' => 'newUser',
             'email' => 'newUser@email.com',
@@ -62,7 +62,7 @@ class UsersCest
     }
 
     public function update(ApiTester $I){
-        $I->amBearerAuthenticated('token-correct');
+        $I->amBearerAuthenticated('admin-token-correct');
         $I->sendPUT('/users/2', [
             'username' => 'newUsername',
             'email' => 'newUser@email.com',
@@ -84,7 +84,7 @@ class UsersCest
     }
 
     public function ban(ApiTester $I){
-        $I->amBearerAuthenticated('token-correct');
+        $I->amBearerAuthenticated('admin-token-correct');
         $I->sendGET('/users/2/ban');
         $I->seeResponseCodeIs(204);
     }
@@ -96,7 +96,7 @@ class UsersCest
     }
 
     public function unban(ApiTester $I){
-        $I->amBearerAuthenticated('token-correct');
+        $I->amBearerAuthenticated('admin-token-correct');
         $I->sendGET('/users/2/unban');
         $I->seeResponseCodeIs(204);
     }
@@ -108,7 +108,7 @@ class UsersCest
     }
 
     public function delete(ApiTester $I){
-        $I->amBearerAuthenticated('token-correct');
+        $I->amBearerAuthenticated('admin-token-correct');
         $I->sendDELETE('/users/2');
         $I->seeResponseCodeIs(204);
     }

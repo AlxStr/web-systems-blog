@@ -31,7 +31,7 @@ class PostsCest
 
     public function index(ApiTester $I)
     {
-        $I->amBearerAuthenticated('token-correct');
+        $I->amBearerAuthenticated('admin-token-correct');
         $I->sendGET('/posts');
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
@@ -49,7 +49,7 @@ class PostsCest
 
     public function create(ApiTester $I)
     {
-        $I->amBearerAuthenticated('token-correct');
+        $I->amBearerAuthenticated('admin-token-correct');
         $I->sendPOST('/posts', [
             'title' => 'New Post',
             'category_id' => '3',
@@ -79,7 +79,7 @@ class PostsCest
 
     public function updateAsAdmin(ApiTester $I)
     {
-        $I->amBearerAuthenticated('token-correct');
+        $I->amBearerAuthenticated('admin-token-correct');
         $I->sendPUT('/posts/1', ['title' => 'New Title']);
         $I->seeResponseCodeIs(200);
     }
@@ -110,7 +110,7 @@ class PostsCest
 
     public function deleteAsAdmin(ApiTester $I)
     {
-        $I->amBearerAuthenticated('token-correct');
+        $I->amBearerAuthenticated('admin-token-correct');
         $I->sendDELETE('/posts/1');
         $I->seeResponseCodeIs(204);
     }
@@ -142,7 +142,7 @@ class PostsCest
     }
 
     public function activateAsAdmin(ApiTester $I){
-        $I->amBearerAuthenticated('token-correct');
+        $I->amBearerAuthenticated('admin-token-correct');
         $I->sendGET('/posts/1/activate');
         $I->seeResponseCodeIs(204);
     }

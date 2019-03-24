@@ -22,14 +22,14 @@ class ProfileCest
     }
 
     public function authenticatedUnauthorized(ApiTester $I){
-        $I->amBearerAuthenticated('token-wrong');
+        $I->amBearerAuthenticated('author-token-wrong');
         $I->sendGET('/profile');
         $I->seeResponseCodeIs(401);
     }
 
     public function authenticated(ApiTester $I)
     {
-        $I->amBearerAuthenticated('token-correct');
+        $I->amBearerAuthenticated('author-token-correct');
         $I->sendGET('/profile');
         $I->seeResponseCodeIs(200);
         $I->seeResponseJsonMatchesJsonPath('$.name');
@@ -37,7 +37,7 @@ class ProfileCest
 
     public function expired(ApiTester $I)
     {
-        $I->amBearerAuthenticated('token-expired');
+        $I->amBearerAuthenticated('author-token-expired');
         $I->sendGET('/profile');
         $I->seeResponseCodeIs(401);
     }
