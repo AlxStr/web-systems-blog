@@ -71,7 +71,7 @@ class PostController extends ActiveController
     public function actionUpdate($id){
         $post = $this->postRepository->get($id);
         if (!Yii::$app->user->can('ownPostsManage', ['post' => $post]) && !Yii::$app->user->can('admin')){
-            throw  new ForbiddenHttpException('Forbidden.');
+            throw  new ForbiddenHttpException('Forbidden. You are not the author of the post.');
         }
 
         $form = new PostForm($post);
@@ -87,7 +87,7 @@ class PostController extends ActiveController
 
     public function actionActivate($id){
         if (!Yii::$app->user->can('admin'))
-            throw  new ForbiddenHttpException('Forbidden.');
+            throw  new ForbiddenHttpException('Forbidden. ');
         $this->postService->activate($id);
         $response = Yii::$app->response;
         $response->setStatusCode(204);
@@ -110,7 +110,7 @@ class PostController extends ActiveController
             if (Yii::$app->user->can('admin')){
                 return true;
             }
-            throw  new ForbiddenHttpException('Forbidden.');
+            throw  new ForbiddenHttpException('Forbidden. Post is under moderation or you are not the author.');
         }
     }
 }
