@@ -50,11 +50,11 @@ class RbacController extends Controller
         $rule = new AuthorRule;
         $authManager->add($rule);
 
-        $updateOwnPost = $authManager->createPermission('updateOwnPost');
-        $updateOwnPost->ruleName = $rule->name;
-        $authManager->add($updateOwnPost);
-        $authManager->addChild($updateOwnPost, $postUpdate);
-        $authManager->addChild($author, $updateOwnPost);
+        $ownPostManage = $authManager->createPermission('ownPostsManage');
+        $ownPostManage->ruleName = $rule->name;
+        $authManager->add($ownPostManage);
+        $authManager->addChild($ownPostManage, $postUpdate);
+        $authManager->addChild($author, $ownPostManage);
 
         // Author
         $authManager->addChild($author, $postCreate);
