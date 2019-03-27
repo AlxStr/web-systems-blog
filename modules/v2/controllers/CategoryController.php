@@ -67,7 +67,7 @@ class CategoryController extends Controller
     public function actionIndex()
     {
         $searchModel = new CategorySearch();
-        $dataProvider = $searchModel->search(['activeOnly' => true]);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return new MapDataProvider($dataProvider, [$this, 'serializeList']);
     }
 
