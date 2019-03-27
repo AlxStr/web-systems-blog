@@ -28,7 +28,6 @@ class ProfileController extends Controller
         $behaviors = parent::behaviors();
         $behaviors['authenticator']['only'] = ['index', 'update'];
         $behaviors['authenticator']['authMethods'] = [
-            HttpBasicAuth::className(),
             HttpBearerAuth::className(),
         ];
         return $behaviors;
