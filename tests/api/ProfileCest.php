@@ -21,13 +21,13 @@ class ProfileCest
         $I->seeResponseCodeIs(401);
     }
 
-    public function authenticatedUnauthorized(ApiTester $I){
+    public function authUnauthorized(ApiTester $I){
         $I->amBearerAuthenticated('author-token-wrong');
         $I->sendGET('/profile');
         $I->seeResponseCodeIs(401);
     }
 
-    public function authenticated(ApiTester $I)
+    public function authSuccess(ApiTester $I)
     {
         $I->amBearerAuthenticated('author-token-correct');
         $I->sendGET('/profile');
@@ -35,14 +35,14 @@ class ProfileCest
         $I->seeResponseJsonMatchesJsonPath('$.name');
     }
 
-    public function expired(ApiTester $I)
+    public function expiredToken(ApiTester $I)
     {
         $I->amBearerAuthenticated('author-token-expired');
         $I->sendGET('/profile');
         $I->seeResponseCodeIs(401);
     }
 
-    public function update(ApiTester $I){
+    public function updateSuccess(ApiTester $I){
         $I->amBearerAuthenticated('author-token-correct');
         $I->sendPUT('/profile', [
             'email' => 'newemail@email.com',
