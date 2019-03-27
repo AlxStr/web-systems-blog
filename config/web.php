@@ -1,5 +1,6 @@
 <?php
 
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -68,6 +69,7 @@ $config = [
                 '<action:(login|logout|signup)>'=>'auth/<action>',
                 '<module:(client|admin)>/<controller:(post)>/<action:(view|update|delete)>/<id:\d+>' => '<module>/<controller>/<action>',
 
+                //api-v1
                 ['class' => 'yii\rest\UrlRule', 'prefix' => 'api', 'controller' => ['v1/category']],
                 ['class' => 'yii\rest\UrlRule',
                     'prefix' => 'api',
@@ -90,9 +92,48 @@ $config = [
                         'GET {id}/activate' => 'activate',
                     ]
                 ],
-                'api/v1/auth' => 'v1/auth/index',
-                'GET api/v1/profile' => 'v1/profile/index',
-                'PUT api/v1/profile' => 'v1/profile/update',
+                [
+                    'class' => 'yii\web\GroupUrlRule',
+                    'prefix' => 'api/v1',
+                    'routePrefix' => 'v1',
+                    'rules' => [
+                        'auth' => 'auth/index',
+                        'GET profile' => 'profile/index',
+                        'PUT profile' => 'profile/update',
+                    ]
+                ],
+
+                //api-v2
+                [
+                    'class' => 'yii\web\GroupUrlRule',
+                    'prefix' => 'api/v2',
+                    'routePrefix' => 'v2',
+                    'rules' => [
+                        'POST auth' => 'auth/index',
+                        'GET profile' => 'profile/index',
+                        'PUT profile' => 'profile/update',
+
+                        'GET posts' => 'post/index',
+                        'GET posts/<id:\d+>' => 'post/view',
+                        'GET posts/<id:\d+>/activate' => 'post/activate',
+                        'POST posts' => 'post/create',
+                        'PUT posts/<id:\d+>' => 'post/update',
+                        'DELETE posts/<id:\d+>' => 'post/delete',
+
+                        'GET categories' => 'category/index',
+                        'GET categories/<id:\d+>' => 'category/view',
+                        'POST categories' => 'category/create',
+                        'PUT categories/<id:\d+>' => 'category/update',
+                        'DELETE categories/<id:\d+>' => 'category/delete',
+
+                        'GET users' => 'user/index',
+                        'GET users/<id:\d+>' => 'user/view',
+                        'GET users/<id:\d+>/<action:(ban|unban)>' => 'user/<action>',
+                        'POST users' => 'user/create',
+                        'PUT users/<id:\d+>' => 'user/update',
+                        'DELETE users/<id:\d+>' => 'user/delete',
+                    ]
+                ],
             ],
         ],
     ],
@@ -106,6 +147,9 @@ $config = [
         ],
         'v1' => [
             'class' => 'app\modules\v1\Module',
+        ],
+        'v2' => [
+            'class' => 'app\modules\v2\Module',
         ],
         'debug' => [
             'class' => 'yii\debug\Module',
