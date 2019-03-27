@@ -1,5 +1,5 @@
 <?php
-namespace app\modules\v1\models\helpers;
+namespace app\models\helpers;
 class DateHelper
 {
     public static function formatApi($timestamp)
