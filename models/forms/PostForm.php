@@ -25,8 +25,7 @@ class PostForm extends Model
         return [
             [['category_id'], 'integer'],
             [['body', 'description'], 'string'],
-            [['title', 'body'], 'required'],
-            [['description'], 'required'],
+            [['title', 'body', 'category_id', 'description'], 'required'],
             [['title', 'logo'], 'string', 'max' => 255],
             [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],

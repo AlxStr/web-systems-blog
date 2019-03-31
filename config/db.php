@@ -5,6 +5,7 @@ return [
 
     'dsn' => getenv('DB_CONNECTION') .
         ':host=' . getenv('DB_HOST') .
+        ';port=3306' .
         ';dbname=' . getenv('DB_NAME'),
 
     'username' => getenv('DB_USER'),

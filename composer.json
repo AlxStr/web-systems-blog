@@ -24,7 +24,10 @@
         "vlucas/phpdotenv": "^2.5",
         "kartik-v/yii2-widget-datepicker": "@dev",
         "kartik-v/yii2-field-range": "*",
-        "kartik-v/yii2-widget-fileinput": "@dev"
+        "kartik-v/yii2-widget-fileinput": "@dev",
+        "guzzlehttp/guzzle": ">=4.1.4 <7.0",
+        "flow/jsonpath": "^0.4.0",
+        "components/jquery-cookie": "1.4.1.2"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

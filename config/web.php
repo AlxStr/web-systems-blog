@@ -63,9 +63,15 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => false,
+            'normalizer' => [
+                'class' => 'yii\web\UrlNormalizer',
+                'action' => yii\web\UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
+            ],
             'rules' => [
                 '' => 'post/index',
                 'post/<id:\d+>' => 'post/view',
+                'category/<id:\d+>' => 'post/category',
                 '<action:(login|logout|signup)>'=>'auth/<action>',
                 '<module:(client|admin)>/<controller:(post)>/<action:(view|update|delete)>/<id:\d+>' => '<module>/<controller>/<action>',
 

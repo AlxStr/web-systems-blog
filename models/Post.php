@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\behaviors\FileUploadBehavior;
+use app\models\queries\PostQuery;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\web\NotFoundHttpException;
@@ -113,5 +114,10 @@ class Post extends \yii\db\ActiveRecord
     public function getPostAuthor()
     {
         return $this->hasOne(User::class, ['id' => 'author']);
+    }
+
+    public static function find(): PostQuery
+    {
+        return new PostQuery(static::class);
     }
 }

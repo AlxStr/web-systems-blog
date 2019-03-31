@@ -2,6 +2,7 @@
 
 use app\models\fixtures\CategoryFixture;
 use app\models\fixtures\TokenFixture;
+use app\models\fixtures\UserFixture;
 
 class CategoriesCest
 {
@@ -11,6 +12,10 @@ class CategoriesCest
             'token' => [
                 'class' => TokenFixture::className(),
                 'dataFile' => codecept_data_dir() . 'token.php'
+            ],
+            'user' => [
+                'class' => UserFixture::className(),
+                'dataFile' => codecept_data_dir() . 'user.php'
             ],
             'category' => [
                 'class' => CategoryFixture::className(),

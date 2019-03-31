@@ -22,6 +22,7 @@ class AuthController extends Controller
         parent::__construct($id, $module, $config);
         $this->signupService = $signupService;
         $this->loginService = $loginService;
+        $this->layout = 'auth';
     }
 
     public function behaviors()

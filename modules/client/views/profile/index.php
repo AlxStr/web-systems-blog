@@ -10,15 +10,11 @@ use yii\widgets\ActiveForm;
 <div class="box">
     <div class="box-body">
     <?php $activeForm = ActiveForm::begin(); ?>
-
         <?= $activeForm->field($form, 'username')->textInput(['maxlength' => true]) ?>
-
         <?= $activeForm->field($form, 'email')->textInput() ?>
-
         <div class="form-group">
             <?= Html::submitButton('Зберегти', ['class' => 'btn btn-primary']) ?>
         </div>
-
     <?php ActiveForm::end(); ?>
     </div>
 </div>

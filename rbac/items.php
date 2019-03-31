@@ -44,13 +44,13 @@ return [
     'author' => [
         'type' => 1,
         'children' => [
-            'updateOwnPost',
+            'ownPostsManage',
             'post create',
             'post update',
             'post delete',
         ],
     ],
-    'updateOwnPost' => [
+    'ownPostsManage' => [
         'type' => 2,
         'ruleName' => 'isAuthor',
         'children' => [

@@ -1,9 +1,12 @@
 <?php
 
+use app\models\helpers\CategoryHelper;
 use app\widgets\Alert;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
+use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
@@ -34,11 +37,17 @@ AppAsset::register($this);
         ],
     ]);
 
+    $categories = [];
+    foreach ((new CategoryHelper())->getCategoriesList() as $i => $category){
+        array_push($categories, ['label' => '' . $category .'', 'url' => Url::to(['post/category', 'id' => $i])]);
+    };
     $menuItems = [
         ['label' => 'Home', 'url' => ['/']],
         ['label' => 'Posts', 'url' => ['post/index']],
+        ['label' => 'Categories',
+            'items' => $categories,
+            ],
     ];
-
 
 
     if (Yii::$app->user->isGuest) {
@@ -46,7 +55,6 @@ AppAsset::register($this);
     } else {
         $menuItems[] = ['label' => 'My Posts', 'url' => ['client/post/index']];
         $menuItems[] = ['label' => 'My Profile', 'url' => ['client/profile/index']];
-
 
         $menuItems[] = '<li>'
             . Html::beginForm(['auth/logout'], 'post')

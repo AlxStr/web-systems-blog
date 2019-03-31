@@ -7,6 +7,7 @@ use app\models\repositories\PostRepository;
 use app\models\services\PostManageService;
 use Yii;
 use app\models\forms\PostSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 
@@ -25,6 +26,27 @@ class PostController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'create'],
+                        'allow' => true,
+                        'roles' => ['author'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['view', 'delete', 'update'],
+                        'roles' => ['ownPostsManage'],
+                        'roleParams' => function($rule) {
+                            return ['post' => $this->postRepository->get(Yii::$app->request->get('id'))];
+                        },
+                    ],
+                ],
+                'denyCallback' => function ($rule, $action) {
+                    return $this->redirect(['post/index']);
+                }
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
